@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ProductCard from './components/ProductCard';
+import ProductModal from './components/ProductModal';
 import CategoryFilter from './components/CategoryFilter';
 import Cart from './components/Cart';
 import LoginModal from './components/LoginModal';
@@ -17,22 +18,34 @@ function App() {
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('همه');
   const [searchTerm, setSearchTerm] = useState('');
   const [auth, setAuth] = useState<AuthState>({
     user: null,
     isAuthenticated: false
   });
+  const [isProductOpen, setIsProductOpen] = useState(false);
+  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
 
   // Filter products based on category and search term
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
-      const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
+      const matchesCategory = selectedCategory === 'همه' || product.category === selectedCategory;
       const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            product.description.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [selectedCategory, searchTerm]);
+
+  const openProduct = (product: Product) => {
+    setActiveProduct(product);
+    setIsProductOpen(true);
+  };
+
+  const closeProduct = () => {
+    setIsProductOpen(false);
+    setActiveProduct(null);
+  };
 
   const addToCart = (product: Product) => {
     setCart(prevCart => {
@@ -123,9 +136,9 @@ function App() {
 
       <main id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Collection</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">مجموعه ما</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explore our carefully curated selection of premium mugs, each designed to enhance your drinking experience.
+            مجموعه‌ای از ماگ‌های باکیفیت که تجربه نوشیدن شما را لذت‌بخش‌تر می‌کند.
           </p>
         </div>
 
@@ -140,6 +153,7 @@ function App() {
             <ProductCard
               key={product.id}
               product={product}
+              onOpen={() => openProduct(product)}
               onAddToCart={addToCart}
             />
           ))}
@@ -147,15 +161,15 @@ function App() {
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+            <p className="text-gray-500 text-lg">محصولی مطابق فیلترها یافت نشد.</p>
             <button
               onClick={() => {
-                setSelectedCategory('All');
+                setSelectedCategory('همه');
                 setSearchTerm('');
               }}
               className="mt-4 text-amber-700 hover:text-amber-800 font-medium"
             >
-              Clear filters
+              پاک کردن فیلترها
             </button>
           </div>
         )}
@@ -171,6 +185,13 @@ function App() {
         onRemoveItem={removeFromCart}
         user={auth.user}
         onLoginToggle={() => setIsLoginOpen(true)}
+      />
+
+      <ProductModal
+        isOpen={isProductOpen}
+        product={activeProduct}
+        onClose={closeProduct}
+        onAddToCart={addToCart}
       />
 
       <LoginModal

@@ -5,11 +5,12 @@ import { Product } from '../types';
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
+  onOpen: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onOpen }) => {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" onClick={onOpen}>
       <div className="relative">
         <img
           src={product.image}
@@ -18,11 +19,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         />
         {!product.inStock && (
           <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
-            <span className="text-white font-semibold text-lg">Out of Stock</span>
+            <span className="text-white font-semibold text-lg">ناموجود</span>
           </div>
         )}
-        <div className="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md">
-          <div className="flex items-center space-x-1">
+        <div className="absolute top-4 left-4 bg-white rounded-full p-2 shadow-md">
+          <div className="flex items-center space-x-1 rtl:space-x-reverse">
             <Star className="h-4 w-4 text-yellow-400 fill-current" />
             <span className="text-sm font-medium">4.8</span>
           </div>
@@ -41,11 +42,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         
         <div className="flex items-center justify-between">
           <div className="text-2xl font-bold text-amber-700">
-            ${product.price.toFixed(2)}
+            {product.price.toFixed(2)} تومان
           </div>
           
           <button
-            onClick={() => onAddToCart(product)}
+            onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
             disabled={!product.inStock}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
               product.inStock
@@ -54,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             }`}
           >
             <ShoppingCart className="h-4 w-4" />
-            <span>Add to Cart</span>
+            <span>افزودن به سبد</span>
           </button>
         </div>
       </div>
