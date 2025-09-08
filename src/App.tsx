@@ -4,9 +4,10 @@ import Hero from './components/Hero';
 import ProductCard from './components/ProductCard';
 import CategoryFilter from './components/CategoryFilter';
 import Cart from './components/Cart';
+import LoginModal from './components/LoginModal';
 import Footer from './components/Footer';
 import { products, categories } from './data/products';
-import { Product, CartState, CartItem } from './types';
+import { Product, CartState, CartItem, AuthState } from './types';
 
 function App() {
   const [cart, setCart] = useState<CartState>({
@@ -15,8 +16,13 @@ function App() {
     itemCount: 0
   });
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
+  const [auth, setAuth] = useState<AuthState>({
+    user: null,
+    isAuthenticated: false
+  });
 
   // Filter products based on category and search term
   const filteredProducts = useMemo(() => {
@@ -80,6 +86,27 @@ function App() {
     });
   };
 
+  const handleLogin = (email: string, name: string) => {
+    setAuth({
+      user: { email, name },
+      isAuthenticated: true
+    });
+    setIsLoginOpen(false);
+  };
+
+  const handleLogout = () => {
+    setAuth({
+      user: null,
+      isAuthenticated: false
+    });
+    // Clear cart on logout
+    setCart({
+      items: [],
+      total: 0,
+      itemCount: 0
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
@@ -87,6 +114,9 @@ function App() {
         onCartToggle={() => setIsCartOpen(true)}
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        user={auth.user}
+        onLoginToggle={() => setIsLoginOpen(true)}
+        onLogout={handleLogout}
       />
 
       <Hero />
@@ -141,6 +171,12 @@ function App() {
         onRemoveItem={removeFromCart}
         user={auth.user}
         onLoginToggle={() => setIsLoginOpen(true)}
+      />
+
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLogin={handleLogin}
       />
     </div>
   );
