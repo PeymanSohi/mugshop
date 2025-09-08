@@ -1,41 +1,33 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { useDebounce } from './hooks/useDebounce';
 import { useUrlState } from './hooks/useUrlState';
+import { AppProvider, useAppContext } from './context/AppContext';
+import { ToastProvider } from './context/ToastContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ProductCard from './components/ProductCard';
 import ProductModal from './components/ProductModal';
 import CategoryFilter from './components/CategoryFilter';
 import AdvancedFilters from './components/AdvancedFilters';
-import SortFilter from './components/SortFilter';
 import Pagination from './components/Pagination';
 import Cart from './components/Cart';
 import MiniCart from './components/MiniCart';
 import LoginModal from './components/LoginModal';
 import Footer from './components/Footer';
+import ProductPage from './pages/ProductPage';
 import { products, categories } from './data/products';
 import { Product, CartState, CartItem, AuthState, SortOption, PaginationState, WishlistState, FilterState } from './types';
+import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 
-function App() {
-  // Load cart from localStorage on component mount
-  const [cart, setCart] = useState<CartState>(() => {
-    const savedCart = localStorage.getItem('mugshop-cart');
-    if (savedCart) {
-      try {
-        return JSON.parse(savedCart);
-      } catch (error) {
-        console.error('Error parsing saved cart:', error);
-      }
-    }
-    return {
-      items: [],
-      total: 0,
-      itemCount: 0
-    };
-  });
+function HomePage() {
+  const navigate = useNavigate();
+  const { cart, auth, addToCart, toggleWishlist, isInWishlist, isLoading } = useAppContext();
+  
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   // URL state management
   const { urlState, updateUrl } = useUrlState();
   const [selectedCategory, setSelectedCategory] = useState(urlState.category || 'همه');
@@ -53,35 +45,14 @@ function App() {
   
   // Debounced search term
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
-  const [auth, setAuth] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false
-  });
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
-  
-  // Wishlist state with localStorage persistence
-  const [wishlist, setWishlist] = useState<WishlistState>(() => {
-    const savedWishlist = localStorage.getItem('mugshop-wishlist');
-    if (savedWishlist) {
-      try {
-        return JSON.parse(savedWishlist);
-      } catch (error) {
-        console.error('Error parsing saved wishlist:', error);
-      }
-    }
-    return { items: [] };
-  });
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('mugshop-cart', JSON.stringify(cart));
-  }, [cart]);
-
-  // Save wishlist to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('mugshop-wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+  // Check if there are active filters
+  const hasActiveFilters = filters.selectedCategories.length > 0 || 
+                          filters.priceRange.min > 0 || 
+                          filters.priceRange.max < 1000 || 
+                          filters.inStockOnly;
 
   // Filter, sort, and paginate products
   const { filteredProducts, pagination } = useMemo(() => {
@@ -143,8 +114,7 @@ function App() {
   }, [selectedCategory, debouncedSearchTerm, sortOption, currentPage, itemsPerPage, filters]);
 
   const openProduct = (product: Product) => {
-    setActiveProduct(product);
-    setIsProductOpen(true);
+    navigate(`/product/${product.id}`);
   };
 
   const closeProduct = () => {
@@ -152,103 +122,19 @@ function App() {
     setActiveProduct(null);
   };
 
-  const addToCart = (product: Product) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.items.find(item => item.product.id === product.id);
-      
-      let newItems: CartItem[];
-      if (existingItem) {
-        newItems = prevCart.items.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        newItems = [...prevCart.items, { product, quantity: 1 }];
-      }
-
-      const total = newItems.reduce((sum, item) => sum + ((item.product.salePrice || item.product.price) * item.quantity), 0);
-      const itemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
-
-      return { items: newItems, total, itemCount };
-    });
-    
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
     // Show mini-cart when item is added
     setIsMiniCartOpen(true);
-  };
-
-  const addToCartWithQuantity = (product: Product, quantity: number) => {
-    if (quantity <= 0) return;
-    setCart(prevCart => {
-      const existingItem = prevCart.items.find(item => item.product.id === product.id);
-      let newItems: CartItem[];
-      if (existingItem) {
-        newItems = prevCart.items.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        newItems = [...prevCart.items, { product, quantity }];
-      }
-      const total = newItems.reduce((sum, item) => sum + ((item.product.salePrice || item.product.price) * item.quantity), 0);
-      const itemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
-      return { items: newItems, total, itemCount };
-    });
-    
-    // Show mini-cart when item is added
-    setIsMiniCartOpen(true);
-  };
-
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity === 0) {
-      removeFromCart(productId);
-      return;
-    }
-
-    setCart(prevCart => {
-      const newItems = prevCart.items.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      );
-
-      const total = newItems.reduce((sum, item) => sum + ((item.product.salePrice || item.product.price) * item.quantity), 0);
-      const itemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
-
-      return { items: newItems, total, itemCount };
-    });
-  };
-
-  const removeFromCart = (productId: string) => {
-    setCart(prevCart => {
-      const newItems = prevCart.items.filter(item => item.product.id !== productId);
-      const total = newItems.reduce((sum, item) => sum + ((item.product.salePrice || item.product.price) * item.quantity), 0);
-      const itemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
-
-      return { items: newItems, total, itemCount };
-    });
   };
 
   const handleLogin = (email: string, name: string) => {
-    setAuth({
-      user: { email, name },
-      isAuthenticated: true
-    });
+    // This will be handled by the context
     setIsLoginOpen(false);
   };
 
   const handleLogout = () => {
-    setAuth({
-      user: null,
-      isAuthenticated: false
-    });
-    // Clear cart on logout
-    setCart({
-      items: [],
-      total: 0,
-      itemCount: 0
-    });
+    // This will be handled by the context
   };
 
   const handleSortChange = (sort: SortOption) => {
@@ -305,24 +191,6 @@ function App() {
     setCurrentPage(1);
   };
 
-  const toggleWishlist = (product: Product) => {
-    setWishlist(prevWishlist => {
-      const isInWishlist = prevWishlist.items.includes(product.id);
-      if (isInWishlist) {
-        return {
-          items: prevWishlist.items.filter(id => id !== product.id)
-        };
-      } else {
-        return {
-          items: [...prevWishlist.items, product.id]
-        };
-      }
-    });
-  };
-
-  const isInWishlist = (productId: string) => {
-    return wishlist.items.includes(productId);
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -352,21 +220,101 @@ function App() {
           onCategoryChange={handleCategoryChange}
         />
 
-        <AdvancedFilters
-          categories={categories.filter(cat => cat !== 'همه')}
-          selectedCategories={filters.selectedCategories}
-          onCategoryToggle={handleCategoryToggle}
-          onClearAll={handleClearAllFilters}
-          priceRange={filters.priceRange}
-          onPriceRangeChange={handlePriceRangeChange}
-          inStockOnly={filters.inStockOnly}
-          onInStockToggle={handleInStockToggle}
-        />
+        {/* Filter and Sort Control Bar */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            {/* Left Side - Filter Toggle */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                  hasActiveFilters 
+                    ? 'bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 shadow-sm' 
+                    : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
+                }`}
+              >
+                <Filter className="h-4 w-4" />
+                <span className="font-medium">فیلترها</span>
+                {hasActiveFilters && (
+                  <span className="bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                    !
+                  </span>
+                )}
+                {isFiltersOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
+              
+              {/* Active Filter Count and Clear All */}
+              {hasActiveFilters && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                    {filters.selectedCategories.length + 
+                     (filters.priceRange.min > 0 || filters.priceRange.max < 1000 ? 1 : 0) + 
+                     (filters.inStockOnly ? 1 : 0)} فیلتر فعال
+                  </span>
+                  <button
+                    onClick={handleClearAllFilters}
+                    className="text-sm text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded transition-colors duration-200"
+                  >
+                    پاک کردن همه
+                  </button>
+                </div>
+              )}
+            </div>
 
-        <SortFilter
-          sortOption={sortOption}
-          onSortChange={handleSortChange}
-        />
+            {/* Right Side - Results Count and Sort Options */}
+            <div className="flex items-center gap-4">
+              {/* Results Counter */}
+              <div className="text-sm text-gray-600">
+                <span className="font-medium text-gray-900">{filteredProducts.length}</span>
+                <span> محصول از </span>
+                <span className="font-medium text-gray-900">{products.length}</span>
+                <span> محصول</span>
+              </div>
+              
+              {/* Sort Options */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">مرتب‌سازی:</span>
+                <div className="relative">
+                  <select
+                    value={sortOption}
+                    onChange={(e) => handleSortChange(e.target.value as SortOption)}
+                    className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-gray-700 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 min-w-[180px]"
+                  >
+                    <option value="popularity">محبوب‌ترین</option>
+                    <option value="newest">جدیدترین</option>
+                    <option value="price-asc">قیمت: کم به زیاد</option>
+                    <option value="price-desc">قیمت: زیاد به کم</option>
+                  </select>
+                  <ChevronDown className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Advanced Filters - Conditionally Rendered with Animation */}
+          <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+            isFiltersOpen ? 'max-h-screen opacity-100 mt-4' : 'max-h-0 opacity-0'
+          }`}>
+            {isFiltersOpen && (
+              <div className="border-t border-gray-200 pt-4">
+                <AdvancedFilters
+                  categories={categories.filter(cat => cat !== 'همه')}
+                  selectedCategories={filters.selectedCategories}
+                  onCategoryToggle={handleCategoryToggle}
+                  onClearAll={handleClearAllFilters}
+                  priceRange={filters.priceRange}
+                  onPriceRangeChange={handlePriceRangeChange}
+                  inStockOnly={filters.inStockOnly}
+                  onInStockToggle={handleInStockToggle}
+                />
+              </div>
+            )}
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 tb:grid-cols-2 lp:grid-cols-3 dt:grid-cols-4 gap-6 tb:gap-7 lp:gap-8">
           {filteredProducts.map(product => (
@@ -374,10 +322,11 @@ function App() {
               key={product.id}
               product={product}
               onOpen={() => openProduct(product)}
-              onAddToCart={addToCart}
+              onAddToCart={handleAddToCart}
               onToggleWishlist={toggleWishlist}
               isInWishlist={isInWishlist(product.id)}
               searchTerm={debouncedSearchTerm}
+              isLoading={isLoading}
             />
           ))}
         </div>
@@ -394,6 +343,7 @@ function App() {
               onClick={() => {
                 setSelectedCategory('همه');
                 setSearchTerm('');
+                handleClearAllFilters();
               }}
               className="mt-4 text-amber-700 hover:text-amber-800 font-medium"
             >
@@ -409,8 +359,8 @@ function App() {
         cart={cart}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        onUpdateQuantity={updateQuantity}
-        onRemoveItem={removeFromCart}
+        onUpdateQuantity={() => {}}
+        onRemoveItem={() => {}}
         user={auth.user}
         onLoginToggle={() => setIsLoginOpen(true)}
       />
@@ -429,8 +379,8 @@ function App() {
         isOpen={isProductOpen}
         product={activeProduct}
         onClose={closeProduct}
-        onAddToCart={addToCart}
-        onAddToCartWithQuantity={addToCartWithQuantity}
+        onAddToCart={handleAddToCart}
+        onAddToCartWithQuantity={() => {}}
       />
 
       <LoginModal
@@ -439,6 +389,21 @@ function App() {
         onLogin={handleLogin}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ToastProvider>
+      <AppProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+          </Routes>
+        </Router>
+      </AppProvider>
+    </ToastProvider>
   );
 }
 

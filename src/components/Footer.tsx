@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div>
-            <div className="flex items-center space-x-2 rtl:space-x-reverse mb-4">
+            <div className="flex items-center gap-2 mb-4">
               <Coffee className="h-8 w-8 text-amber-400" />
               <h3 className="text-2xl font-bold">ماگ‌کرفت</h3>
             </div>
@@ -43,15 +43,15 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">تماس با ما</h4>
             <div className="space-y-3 text-gray-300">
-              <div className="flex items-center space-x-2 rtl:space-x-reverse">
+              <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 <span>hello@mugcraft.com</span>
               </div>
-              <div className="flex items-center space-x-2 rtl:space-x-reverse">
+              <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
                 <span>(555) 123-4567</span>
               </div>
-              <div className="flex items-center space-x-2 rtl:space-x-reverse">
+              <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
                 <span>پورتلند، اورِگون</span>
               </div>

@@ -24,18 +24,24 @@ const Cart: React.FC<CartProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div 
+      className="fixed inset-0 z-50 overflow-hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-title"
+    >
       <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
       
       <div className="absolute left-0 top-0 h-full w-full max-w-md bg-white shadow-xl">
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold flex items-center space-x-2">
+          <h2 id="cart-title" className="text-xl font-semibold flex items-center gap-2">
             <ShoppingBag className="h-6 w-6" />
             <span>سبد خرید</span>
           </h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 transition-colors"
+            aria-label="بستن سبد خرید"
           >
             <X className="h-6 w-6" />
           </button>
@@ -51,7 +57,7 @@ const Cart: React.FC<CartProps> = ({
           ) : (
             <div className="space-y-4">
               {cart.items.map((item: CartItem) => (
-                <div key={item.product.id} className="flex items-center space-x-4 rtl:space-x-reverse bg-gray-50 p-4 rounded-lg">
+                <div key={item.product.id} className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg">
                   <img
                     src={item.product.image}
                     alt={item.product.name}
@@ -62,22 +68,26 @@ const Cart: React.FC<CartProps> = ({
                   
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">{item.product.name}</h3>
-                    <p className="text-amber-700 font-semibold">{item.product.price.toFixed(2)} تومان</p>
+                    <p className="text-amber-700 font-semibold">
+                      {(item.product.salePrice || item.product.price).toFixed(2)} تومان
+                    </p>
                   </div>
                   
-                  <div className="flex items-center space-x-2 rtl:space-x-reverse">
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
                       className="text-gray-500 hover:text-gray-700 p-1"
+                      aria-label={`کاهش تعداد ${item.product.name}`}
                     >
                       <Minus className="h-4 w-4" />
                     </button>
                     
-                    <span className="font-medium w-8 text-center">{item.quantity}</span>
+                    <span className="font-medium w-8 text-center" aria-label={`تعداد: ${item.quantity}`}>{item.quantity}</span>
                     
                     <button
                       onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
                       className="text-gray-500 hover:text-gray-700 p-1"
+                      aria-label={`افزایش تعداد ${item.product.name}`}
                     >
                       <Plus className="h-4 w-4" />
                     </button>
@@ -86,6 +96,7 @@ const Cart: React.FC<CartProps> = ({
                   <button
                     onClick={() => onRemoveItem(item.product.id)}
                     className="text-red-500 hover:text-red-700 p-1"
+                    aria-label={`حذف ${item.product.name} از سبد خرید`}
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -108,7 +119,7 @@ const Cart: React.FC<CartProps> = ({
               </button>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center justify-center space-x-2 rtl:space-x-reverse text-gray-600 text-sm">
+                <div className="flex items-center justify-center gap-2 text-gray-600 text-sm">
                   <Lock className="h-4 w-4" />
                   <span>برای تکمیل خرید لطفاً وارد شوید</span>
                 </div>

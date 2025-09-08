@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+          <div className="flex items-center gap-2">
             <Coffee className="h-8 w-8 text-amber-700" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ماگ‌کرفت</h1>
           </div>
@@ -72,19 +72,19 @@ const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* User Actions */}
-          <div className="hidden md:flex items-center space-x-3 rtl:space-x-reverse">
+          <div className="hidden md:flex items-center gap-3">
             <button onClick={toggleTheme} aria-label="تغییر تم" className="p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             {user ? (
-              <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                <div className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
                   <User className="h-5 w-5" />
                   <span className="font-medium">{user.name}</span>
                 </div>
                 <button
                   onClick={onLogout}
-                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors duration-200 flex items-center space-x-1 rtl:space-x-reverse"
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors duration-200 flex items-center gap-1"
                 >
                   <LogOut className="h-4 w-4" />
                   <span>خروج</span>
@@ -93,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({
             ) : (
               <button
                 onClick={onLoginToggle}
-                className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center space-x-2"
+                className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center gap-2"
               >
                 <User className="h-5 w-5" />
                 <span>ورود</span>
@@ -103,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({
             {/* Cart Button */}
             <button
               onClick={onCartToggle}
-              className="relative bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition-colors duration-200 flex items-center space-x-2"
+              className="relative bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition-colors duration-200 flex items-center gap-2"
             >
               <ShoppingCart className="h-5 w-5" />
               <span>سبد خرید</span>
@@ -137,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({
 
           {user ? (
             <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-              <div className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200">
+              <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
                 <User className="h-5 w-5" />
                 <span className="font-medium">{user.name}</span>
               </div>

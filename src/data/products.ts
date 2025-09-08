@@ -1,4 +1,48 @@
-import { Product } from '../types';
+import { Product, Review } from '../types';
+
+// Mock reviews data
+const mockReviews: Review[] = [
+  {
+    id: '1',
+    productId: '1',
+    userName: 'علی احمدی',
+    rating: 5,
+    comment: 'ماگ بسیار باکیفیت و زیبا. کاملاً راضی هستم.',
+    date: new Date('2024-01-20')
+  },
+  {
+    id: '2',
+    productId: '1',
+    userName: 'فاطمه محمدی',
+    rating: 4,
+    comment: 'خوب است اما کمی کوچک است.',
+    date: new Date('2024-01-18')
+  },
+  {
+    id: '3',
+    productId: '2',
+    userName: 'حسن رضایی',
+    rating: 5,
+    comment: 'طراحی روستیک فوق‌العاده‌ای دارد.',
+    date: new Date('2024-01-22')
+  },
+  {
+    id: '4',
+    productId: '3',
+    userName: 'مریم کریمی',
+    rating: 4,
+    comment: 'رنگ مشکی مات خیلی شیک است.',
+    date: new Date('2024-02-02')
+  },
+  {
+    id: '5',
+    productId: '3',
+    userName: 'محمد صادقی',
+    rating: 5,
+    comment: 'کیفیت عالی و قیمت مناسب.',
+    date: new Date('2024-02-01')
+  }
+];
 
 export const products: Product[] = [
   {
@@ -8,7 +52,13 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     description: 'ماگ سرامیکی سفید و همیشه‌زیبا؛ مناسب برای قهوه صبحگاهی یا چای عصرانه.',
     category: 'کلاسیک',
-    inStock: true
+    inStock: true,
+    createdAt: new Date('2024-01-15'),
+    popularity: 95,
+    stockCount: 50,
+    reviews: mockReviews.filter(r => r.productId === '1'),
+    averageRating: 4.5,
+    reviewCount: 2
   },
   {
     id: '2',
@@ -17,16 +67,29 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     description: 'ماگ قهوه‌ای دست‌ساز با بافت منحصربه‌فرد و حس طبیعی.',
     category: 'روستیک',
-    inStock: true
+    inStock: true,
+    createdAt: new Date('2024-01-20'),
+    popularity: 88,
+    stockCount: 30,
+    reviews: mockReviews.filter(r => r.productId === '2'),
+    averageRating: 5.0,
+    reviewCount: 1
   },
   {
     id: '3',
     name: 'ماگ مشکی مات مدرن',
     price: 24.99,
+    salePrice: 19.99,
     image: '/mugs/image.jpeg',
     description: 'ماگ با روکش مشکی مات؛ انتخابی شیک برای دوستداران قهوه مدرن.',
     category: 'مدرن',
-    inStock: true
+    inStock: true,
+    createdAt: new Date('2024-02-01'),
+    popularity: 92,
+    stockCount: 25,
+    reviews: mockReviews.filter(r => r.productId === '3'),
+    averageRating: 4.5,
+    reviewCount: 2
   },
   {
     id: '4',
@@ -35,16 +98,23 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     description: 'فنجان چای الهام‌گرفته از سبک قدیمی با طرح‌های گلدار ظریف.',
     category: 'وینتیج',
-    inStock: true
+    inStock: true,
+    createdAt: new Date('2024-01-25'),
+    popularity: 78,
+    stockCount: 3
   },
   {
     id: '5',
     name: 'ست ماگ لعاب‌خورده دست‌ساز',
     price: 45.00,
+    salePrice: 35.00,
     image: '/mugs/image.jpeg',
     description: 'ست دو عددی ماگ‌های دست‌ساز با لعاب زیبا.',
     category: 'ست‌ها',
-    inStock: true
+    inStock: true,
+    createdAt: new Date('2024-01-10'),
+    popularity: 85,
+    stockCount: 2
   },
   {
     id: '6',
