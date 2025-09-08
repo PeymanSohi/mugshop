@@ -55,6 +55,8 @@ const Cart: React.FC<CartProps> = ({
                   <img
                     src={item.product.image}
                     alt={item.product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="h-16 w-16 object-cover rounded-md"
                   />
                   

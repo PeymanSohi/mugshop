@@ -11,11 +11,14 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onOpen }) => {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" onClick={onOpen}>
-      <div className="relative">
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-64 object-cover"
+          loading="lazy"
+          decoding="async"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1440px) 33vw, 25vw"
+          className="w-full h-full object-cover"
         />
         {!product.inStock && (
           <div className="absolute inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">

@@ -69,6 +69,26 @@ function App() {
     });
   };
 
+  const addToCartWithQuantity = (product: Product, quantity: number) => {
+    if (quantity <= 0) return;
+    setCart(prevCart => {
+      const existingItem = prevCart.items.find(item => item.product.id === product.id);
+      let newItems: CartItem[];
+      if (existingItem) {
+        newItems = prevCart.items.map(item =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        newItems = [...prevCart.items, { product, quantity }];
+      }
+      const total = newItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+      const itemCount = newItems.reduce((sum, item) => sum + item.quantity, 0);
+      return { items: newItems, total, itemCount };
+    });
+  };
+
   const updateQuantity = (productId: string, quantity: number) => {
     if (quantity === 0) {
       removeFromCart(productId);
@@ -134,7 +154,7 @@ function App() {
 
       <Hero />
 
-      <main id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main id="products" className="max-w-7xl mx-auto px-4 tb:px-6 lp:px-8 py-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">مجموعه ما</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -148,7 +168,7 @@ function App() {
           onCategoryChange={setSelectedCategory}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 tb:grid-cols-2 lp:grid-cols-3 dt:grid-cols-4 gap-6 tb:gap-7 lp:gap-8">
           {filteredProducts.map(product => (
             <ProductCard
               key={product.id}
@@ -192,6 +212,7 @@ function App() {
         product={activeProduct}
         onClose={closeProduct}
         onAddToCart={addToCart}
+        onAddToCartWithQuantity={addToCartWithQuantity}
       />
 
       <LoginModal

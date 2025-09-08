@@ -293,4 +293,11 @@ export const products: Product[] = [
   }
 ];
 
+// Ensure all products have a full image set for the slider
+products.forEach((product) => {
+  if (!product.images || product.images.length < 2) {
+    product.images = ['/mugs/image.jpeg', '/mugs/image-2.jpeg', '/mugs/image-3.jpeg'];
+  }
+});
+
 export const categories = ['همه', 'کلاسیک', 'مدرن', 'روستیک', 'وینتیج', 'ست‌ها'];
