@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useDebounce } from './hooks/useDebounce';
 import { useUrlState } from './hooks/useUrlState';
 import { AppProvider, useAppContext } from './context/AppContext';
@@ -19,12 +19,11 @@ import ProductPage from './pages/ProductPage';
 import ResponsiveContainer from './components/ResponsiveContainer';
 import ResponsiveGrid from './components/ResponsiveGrid';
 import { products, categories } from './data/products';
-import { Product, CartState, CartItem, AuthState, SortOption, PaginationState, WishlistState, FilterState } from './types';
+import { Product, SortOption, PaginationState, FilterState } from './types';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import AnimatedBackground from './components/AnimatedBackground';
 
 function HomePage() {
-  const navigate = useNavigate();
   const { cart, auth, addToCart, toggleWishlist, isInWishlist, isLoading } = useAppContext();
   
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -117,7 +116,8 @@ function HomePage() {
   }, [selectedCategory, debouncedSearchTerm, sortOption, currentPage, itemsPerPage, filters]);
 
   const openProduct = (product: Product) => {
-    navigate(`/product/${product.id}`);
+    setActiveProduct(product);
+    setIsProductOpen(true);
   };
 
   const closeProduct = () => {
@@ -131,7 +131,15 @@ function HomePage() {
     setIsMiniCartOpen(true);
   };
 
-  const handleLogin = (email: string, name: string) => {
+  const handleAddToCartWithQuantity = (product: Product, quantity: number) => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
+    // Show mini-cart when item is added
+    setIsMiniCartOpen(true);
+  };
+
+  const handleLogin = (_email: string, _name: string) => {
     // This will be handled by the context
     setIsLoginOpen(false);
   };
@@ -390,7 +398,7 @@ function HomePage() {
         product={activeProduct}
         onClose={closeProduct}
         onAddToCart={handleAddToCart}
-        onAddToCartWithQuantity={() => {}}
+        onAddToCartWithQuantity={handleAddToCartWithQuantity}
       />
 
       <LoginModal

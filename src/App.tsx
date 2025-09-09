@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useDebounce } from './hooks/useDebounce';
 import { useUrlState } from './hooks/useUrlState';
 import Header from './components/Header';
@@ -143,6 +143,7 @@ function App() {
   }, [selectedCategory, debouncedSearchTerm, sortOption, currentPage, itemsPerPage, filters]);
 
   const openProduct = (product: Product) => {
+    console.log('Opening product modal for:', product.name);
     setActiveProduct(product);
     setIsProductOpen(true);
   };
@@ -232,7 +233,7 @@ function App() {
 
   const handleLogin = (email: string, name: string) => {
     setAuth({
-      user: { email, name },
+      user: { id: Date.now().toString(), email, name },
       isAuthenticated: true
     });
     setIsLoginOpen(false);

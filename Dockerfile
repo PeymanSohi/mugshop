@@ -30,5 +30,7 @@ RUN npm run build
 FROM nginx:alpine AS prod
 # Copy built assets to default nginx html directory
 COPY --from=build /app/dist /usr/share/nginx/html
+# Add SPA fallback config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Nginx listens on 80 by default
 EXPOSE 80
