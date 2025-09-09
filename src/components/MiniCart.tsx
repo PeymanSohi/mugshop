@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, X, ChevronLeft, Plus, Minus, Trash2, Truck, Gift, Tag } from 'lucide-react';
 import { CartState, CartItem } from '../types';
+import { formatPersianPrice, toPersianNumbers } from '../utils/persianNumbers';
 
 interface MiniCartProps {
   cart: CartState;
@@ -66,7 +67,7 @@ const MiniCart: React.FC<MiniCartProps> = ({
             <span>سبد خرید</span>
             {cart.itemCount > 0 && (
               <span className="bg-amber-700 text-white text-xs px-2 py-1 rounded-full">
-                {cart.itemCount}
+                {toPersianNumbers(cart.itemCount.toString())}
               </span>
             )}
           </h2>
@@ -98,7 +99,7 @@ const MiniCart: React.FC<MiniCartProps> = ({
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-gray-900 text-sm truncate">{item.product.name}</h3>
                     <p className="text-primary-600 font-semibold text-sm">
-                      {(item.product.salePrice || item.product.price).toFixed(2)} تومان
+                      {formatPersianPrice(item.product.salePrice || item.product.price)}
                     </p>
                     
                     {/* Quantity Controls */}
@@ -110,7 +111,7 @@ const MiniCart: React.FC<MiniCartProps> = ({
                         >
                           <Minus className="h-3 w-3" />
                         </button>
-                        <span className="text-sm font-medium min-w-[20px] text-center">{item.quantity}</span>
+                        <span className="text-sm font-medium min-w-[20px] text-center">{toPersianNumbers(item.quantity.toString())}</span>
                         <button
                           onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
                           className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
@@ -135,7 +136,7 @@ const MiniCart: React.FC<MiniCartProps> = ({
               
               {cart.items.length > 3 && (
                 <div className="text-center text-gray-500 text-sm">
-                  و {cart.items.length - 3} محصول دیگر...
+                  و {toPersianNumbers((cart.items.length - 3).toString())} محصول دیگر...
                 </div>
               )}
             </div>
@@ -149,7 +150,7 @@ const MiniCart: React.FC<MiniCartProps> = ({
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <div className="flex items-center gap-2 text-green-700 text-sm">
                   <Truck className="h-4 w-4" />
-                  <span>تا ارسال رایگان {remainingForFreeShipping.toFixed(2)} تومان دیگر</span>
+                  <span>تا ارسال رایگان {formatPersianPrice(remainingForFreeShipping)} دیگر</span>
                 </div>
                 <div className="w-full bg-green-200 rounded-full h-2 mt-2">
                   <div 
@@ -200,26 +201,26 @@ const MiniCart: React.FC<MiniCartProps> = ({
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
                 <span>جمع کل:</span>
-                <span>{cart.total.toFixed(2)} تومان</span>
+                <span>{formatPersianPrice(cart.total)}</span>
               </div>
               
               <div className="flex items-center justify-between">
                 <span>هزینه ارسال:</span>
                 <span className={shippingCost === 0 ? 'text-green-600' : ''}>
-                  {shippingCost === 0 ? 'رایگان' : `${shippingCost.toFixed(2)} تومان`}
+                  {shippingCost === 0 ? 'رایگان' : formatPersianPrice(shippingCost)}
                 </span>
               </div>
               
               {discount > 0 && (
                 <div className="flex items-center justify-between text-green-600">
                   <span>تخفیف:</span>
-                  <span>-{discount.toFixed(2)} تومان</span>
+                  <span>-{formatPersianPrice(discount)}</span>
                 </div>
               )}
               
               <div className="border-t pt-2 flex items-center justify-between text-lg font-semibold">
                 <span>مبلغ نهایی:</span>
-                <span className="text-primary-600">{finalTotal.toFixed(2)} تومان</span>
+                <span className="text-primary-600">{formatPersianPrice(finalTotal)}</span>
               </div>
             </div>
             

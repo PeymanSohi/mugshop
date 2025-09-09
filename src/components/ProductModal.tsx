@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Product } from '../types';
 import { usePinchZoom } from '../hooks/usePinchZoom';
 import { useFocusTrap } from '../hooks/useFocusTrap';
+import { formatPersianPrice, toPersianNumbers } from '../utils/persianNumbers';
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -280,16 +281,16 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
                   {product.salePrice ? (
                     <>
                       <div className="flex items-center gap-3">
-                        <span className="text-3xl font-bold text-amber-700 dark:text-amber-400">{product.salePrice.toFixed(2)} تومان</span>
+                        <span className="text-3xl font-bold text-amber-700 dark:text-amber-400">{formatPersianPrice(product.salePrice)}</span>
                         <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">تخفیف</span>
                       </div>
-                      <span className="text-lg text-gray-500 dark:text-gray-400 line-through">{product.price.toFixed(2)} تومان</span>
+                      <span className="text-lg text-gray-500 dark:text-gray-400 line-through">{formatPersianPrice(product.price)}</span>
                       <span className="text-sm text-green-600 dark:text-green-400 font-medium">
-                        {Math.round(((product.price - product.salePrice) / product.price) * 100)}% صرفه‌جویی
+                        {toPersianNumbers(Math.round(((product.price - product.salePrice) / product.price) * 100).toString())}٪ صرفه‌جویی
                       </span>
                     </>
                   ) : (
-                    <span className="text-3xl font-bold text-amber-700 dark:text-amber-400">{product.price.toFixed(2)} تومان</span>
+                    <span className="text-3xl font-bold text-amber-700 dark:text-amber-400">{formatPersianPrice(product.price)}</span>
                   )}
                 </div>
                 <div className="text-right">
@@ -328,8 +329,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
                     type="number"
                     min={1}
                     max={99}
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, Math.min(99, Number(e.target.value) || 1)))}
+                    value={toPersianNumbers(quantity.toString())}
+                    onChange={(e) => {
+                      const englishValue = e.target.value.replace(/[۰-۹]/g, (digit) => {
+                        const index = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'].indexOf(digit);
+                        return index !== -1 ? index.toString() : digit;
+                      });
+                      setQuantity(Math.max(1, Math.min(99, Number(englishValue) || 1)));
+                    }}
                     className="w-12 text-center outline-none py-2 bg-transparent text-gray-900 dark:text-white font-medium focus:bg-gray-50 dark:focus:bg-gray-600"
                     aria-label="تعداد محصول"
                   />
@@ -345,7 +352,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
                   </button>
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                  {quantity === 99 ? 'حداکثر' : `حداکثر ۹۹ عدد`}
+                  {quantity === 99 ? 'حداکثر' : `حداکثر ${toPersianNumbers('99')} عدد`}
                 </div>
               </div>
             </div>
@@ -382,7 +389,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
                       </svg>
-                      {product.inStock ? `افزودن ${quantity} عدد به سبد خرید` : 'ناموجود'}
+                      {product.inStock ? `افزودن ${toPersianNumbers(quantity.toString())} عدد به سبد خرید` : 'ناموجود'}
                     </>
                   )}
                 </div>

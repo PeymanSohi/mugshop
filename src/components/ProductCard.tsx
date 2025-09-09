@@ -4,6 +4,7 @@ import { Product } from '../types';
 import { HighlightText } from '../utils/highlightText';
 import LoadingSpinner from './LoadingSpinner';
 import ResponsiveImage from './ResponsiveImage';
+import { formatPersianPrice, toPersianNumbers } from '../utils/persianNumbers';
 
 interface ProductCardProps {
   product: Product;
@@ -36,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onOpen,
         {/* Stock Badge */}
         {product.inStock && product.stockCount && product.stockCount <= 5 && (
           <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-            فقط {product.stockCount} عدد باقی‌مانده
+            فقط {toPersianNumbers(product.stockCount.toString())} عدد باقی‌مانده
           </div>
         )}
         
@@ -51,7 +52,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onOpen,
         <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white dark:bg-gray-700 rounded-full p-1.5 sm:p-2 shadow-md">
           <div className="flex items-center gap-1">
             <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">{product.averageRating?.toFixed(1) || '4.8'}</span>
+            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">{toPersianNumbers((product.averageRating?.toFixed(1) || '4.8'))}</span>
           </div>
         </div>
         
@@ -88,15 +89,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onOpen,
             {product.salePrice ? (
               <>
                 <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-700 dark:text-primary-400">
-                  {product.salePrice.toFixed(2)} تومان
+                  {formatPersianPrice(product.salePrice)}
                 </div>
                 <div className="text-sm sm:text-base lg:text-lg text-gray-500 dark:text-gray-400 line-through">
-                  {product.price.toFixed(2)} تومان
+                  {formatPersianPrice(product.price)}
                 </div>
               </>
             ) : (
               <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-700 dark:text-primary-400">
-                {product.price.toFixed(2)} تومان
+                {formatPersianPrice(product.price)}
               </div>
             )}
             

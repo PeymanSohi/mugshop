@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Coffee, ShoppingCart, User, LogOut, Menu, X } from 'lucide-react';
 import { User as UserType, Product } from '../types';
 import EnhancedSearch from './EnhancedSearch';
+import { toPersianNumbers } from '../utils/persianNumbers';
 
 interface HeaderProps {
   cartItemCount: number;
@@ -45,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({
           {/* Logo */}
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <Coffee className="h-8 w-8 text-amber-700" />
-            <h1 className="text-2xl font-bold text-gray-900">ماگ‌کرفت</h1>
+            <h1 className="text-2xl font-bold text-gray-900">mug.myy</h1>
           </div>
 
           {/* Mobile hamburger */}
@@ -110,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({
               <span>سبد خرید</span>
               {cartItemCount > 0 && (
                 <span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
-                  {cartItemCount}
+                  {toPersianNumbers(cartItemCount.toString())}
                 </span>
               )}
             </button>
@@ -162,7 +163,7 @@ const Header: React.FC<HeaderProps> = ({
             <ShoppingCart className="h-5 w-5" /> سبد خرید
             {cartItemCount > 0 && (
               <span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
-                {cartItemCount}
+                {toPersianNumbers(cartItemCount.toString())}
               </span>
             )}
           </button>

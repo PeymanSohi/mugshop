@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Coffee className="h-6 w-6 sm:h-8 sm:w-8 text-primary-400" />
-              <h3 className="text-xl sm:text-2xl font-bold">ماگ‌کرفت</h3>
+              <h3 className="text-xl sm:text-2xl font-bold">mug.myy</h3>
             </div>
             <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
               ماگ‌های دست‌ساز و باکیفیت برای علاقه‌مندان حرفه‌ای قهوه.
@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
             <div className="space-y-3 text-gray-300 text-sm sm:text-base">
               <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
                 <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                <span className="break-all">hello@mugcraft.com</span>
+                <span className="break-all">hello@mug.myy</span>
               </div>
               <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
                 <Phone className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
 
         <div className="border-t border-gray-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-gray-300">
           <p className="text-xs sm:text-sm leading-relaxed">
-            © ۲۰۲۵ ماگ‌کرفت. کلیه حقوق محفوظ است. با عشق ساخته‌شده در پورتلند.
+            © ۲۰۲۵ mug.myy. کلیه حقوق محفوظ است. با عشق ساخته‌شده در پورتلند.
           </p>
         </div>
       </ResponsiveContainer>

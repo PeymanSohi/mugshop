@@ -487,8 +487,13 @@ function HomePage() {
         onClose={() => setIsCartOpen(false)}
         onUpdateQuantity={updateQuantity}
         onRemoveItem={removeFromCart}
-        user={auth.user}
+        user={user}
         onLoginToggle={() => setIsLoginOpen(true)}
+        onAddToCart={addToCart}
+        onToggleWishlist={toggleWishlist}
+        isInWishlist={isInWishlist}
+        isLoading={isLoading}
+        products={products}
       />
 
       <MiniCart

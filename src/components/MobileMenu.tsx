@@ -117,7 +117,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
           <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-            <p>ماگ‌کرفت © ۲۰۲۵</p>
+            <p>mug.myy © ۲۰۲۵</p>
             <p>ساخته شده با ❤️ در ایران</p>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PaginationState } from '../types';
+import { toPersianNumbers } from '../utils/persianNumbers';
 
 interface PaginationProps {
   pagination: PaginationState;
@@ -51,7 +52,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange }) => 
     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-2 mt-8 sm:mt-12">
       {/* Mobile: Show current page info */}
       <div className="sm:hidden text-sm text-gray-600 dark:text-gray-400">
-        صفحه {currentPage} از {totalPages}
+        صفحه {toPersianNumbers(currentPage.toString())} از {toPersianNumbers(totalPages.toString())}
       </div>
       
       <div className="flex items-center gap-2">
@@ -78,7 +79,7 @@ const Pagination: React.FC<PaginationProps> = ({ pagination, onPageChange }) => 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-200'
             }`}
           >
-            {page}
+            {typeof page === 'number' ? toPersianNumbers(page.toString()) : page}
           </button>
         ))}
       </div>
