@@ -19,6 +19,7 @@ import ProductPage from './pages/ProductPage';
 import { products, categories } from './data/products';
 import { Product, CartState, CartItem, AuthState, SortOption, PaginationState, WishlistState, FilterState } from './types';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
+import AnimatedBackground from './components/AnimatedBackground';
 
 function HomePage() {
   const navigate = useNavigate();
@@ -194,6 +195,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AnimatedBackground />
       <Header
         cartItemCount={cart.itemCount}
         onCartToggle={() => setIsCartOpen(true)}

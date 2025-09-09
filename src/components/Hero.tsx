@@ -9,11 +9,13 @@ const Hero: React.FC = () => {
 
   return (
     <section className="relative bg-gradient-to-br from-amber-50 to-orange-100 py-20 overflow-hidden">
-      {/* Animated background elements */}
+      {/* Enhanced animated background elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-10 left-10 w-20 h-20 bg-amber-200 rounded-full opacity-20 animate-pulse"></div>
-        <div className="absolute top-32 right-20 w-16 h-16 bg-orange-200 rounded-full opacity-30 animate-bounce"></div>
-        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-amber-300 rounded-full opacity-25 animate-ping"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 bg-amber-200 rounded-full opacity-20 animate-float"></div>
+        <div className="absolute top-32 right-20 w-16 h-16 bg-orange-200 rounded-full opacity-30 animate-float-reverse"></div>
+        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-amber-300 rounded-full opacity-25 animate-pulse-glow"></div>
+        <div className="absolute top-1/2 right-1/3 w-8 h-8 bg-orange-300 rounded-full opacity-20 animate-drift"></div>
+        <div className="absolute bottom-32 right-10 w-14 h-14 bg-amber-400 rounded-full opacity-15 animate-float"></div>
       </div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
