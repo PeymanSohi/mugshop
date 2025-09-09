@@ -6,6 +6,7 @@ WORKDIR /app
 ENV CI=true
 
 # Install dependencies separately to leverage Docker cache
+RUN apk add --no-cache libc6-compat
 COPY package*.json ./
 RUN npm ci
 
