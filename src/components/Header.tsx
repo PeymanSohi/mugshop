@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Coffee, ShoppingCart, Search, User, LogOut, Menu, X, Moon, Sun } from 'lucide-react';
+import { Coffee, ShoppingCart, Search, User, LogOut, Menu, X, Moon, Sun, Heart } from 'lucide-react';
 import { User as UserType } from '../types';
+import MobileMenu from './MobileMenu';
+import ResponsiveContainer from './ResponsiveContainer';
 
 interface HeaderProps {
   cartItemCount: number;
@@ -27,7 +29,6 @@ const Header: React.FC<HeaderProps> = ({
     if (saved === 'dark' || saved === 'light') return saved;
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
-  const toggleMobile = () => setMobileOpen(v => !v);
   const closeMobile = () => setMobileOpen(false);
 
   useEffect(() => {
@@ -37,10 +38,145 @@ const Header: React.FC<HeaderProps> = ({
   }, [theme]);
 
   const toggleTheme = () => setTheme(t => (t === 'dark' ? 'light' : 'dark'));
+
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <>
+      <header className="bg-white dark:bg-gray-900 shadow-lg sticky top-0 z-40">
+        <ResponsiveContainer maxWidth="3xl" padding="md">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileOpen(true)}
+              className="lg:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              aria-label="باز کردن منو"
+            >
+              <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+            </button>
+
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <Coffee className="h-6 w-6 sm:h-8 sm:w-8 text-primary-600" />
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">ماگ‌کرفت</h1>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8 space-x-reverse">
+              <a href="/" className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                صفحه اصلی
+              </a>
+              <a href="/products" className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                محصولات
+              </a>
+              <a href="/about" className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                درباره ما
+              </a>
+              <a href="/contact" className="text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                تماس با ما
+              </a>
+            </nav>
+
+            {/* Search Bar - Hidden on mobile */}
+            <div className="hidden md:block flex-1 max-w-md mx-4 lg:mx-8">
+              <div className="relative">
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <input
+                  type="text"
+                  placeholder="جستجوی ماگ..."
+                  value={searchTerm}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="w-full pr-10 pl-4 py-2 text-sm border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-1 sm:gap-3">
+              {/* Theme Toggle */}
+              <button 
+                onClick={toggleTheme} 
+                aria-label="تغییر تم" 
+                className="p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
+                {theme === 'dark' ? <Sun className="h-4 w-4 sm:h-5 sm:w-5" /> : <Moon className="h-4 w-4 sm:h-5 sm:w-5" />}
+              </button>
+
+              {/* Wishlist - Hidden on mobile */}
+              <button className="hidden sm:flex p-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
+              </button>
+
+              {/* User Actions - Desktop */}
+              <div className="hidden lg:flex items-center gap-3">
+                {user ? (
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
+                      <User className="h-5 w-5" />
+                      <span className="font-medium text-sm xl:text-base">{user.name}</span>
+                    </div>
+                    <button
+                      onClick={onLogout}
+                      className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors duration-200 flex items-center gap-1 text-sm"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>خروج</span>
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={onLoginToggle}
+                    className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center gap-2 text-sm"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>ورود</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Cart Button */}
+              <button
+                onClick={onCartToggle}
+                className="relative bg-primary-600 text-white px-3 py-2 sm:px-4 rounded-lg hover:bg-primary-700 transition-colors duration-200 flex items-center gap-1 sm:gap-2"
+              >
+                <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline text-sm">سبد خرید</span>
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center font-bold">
+                    {cartItemCount}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Search Bar */}
+          <div className="md:hidden pb-3">
+            <div className="relative">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <input
+                type="text"
+                placeholder="جستجوی ماگ..."
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+                className="w-full pr-10 pl-4 py-2 text-sm border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+              />
+            </div>
+          </div>
+        </ResponsiveContainer>
+      </header>
+
+      {/* Mobile Menu */}
+      <MobileMenu
+        isOpen={mobileOpen}
+        onClose={closeMobile}
+        user={user}
+        onLoginToggle={onLoginToggle}
+        onLogout={onLogout}
+      />
+    </>
+  );
+};
+
+export default Header;
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Coffee className="h-8 w-8 text-amber-700" />
