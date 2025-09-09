@@ -7,7 +7,7 @@ const mockReviews: Review[] = [
     productId: '1',
     userName: 'علی احمدی',
     rating: 5,
-    comment: 'ماگ بسیار باکیفیت و زیبا. کاملاً راضی هستم.',
+    comment: 'ماگ بسیار باکیفیت و زیبا. کاملاً راضی هستم. طراحی کلاسیک و رنگ سفید براق عالی است.',
     date: new Date('2024-01-20')
   },
   {
@@ -15,32 +15,152 @@ const mockReviews: Review[] = [
     productId: '1',
     userName: 'فاطمه محمدی',
     rating: 4,
-    comment: 'خوب است اما کمی کوچک است.',
+    comment: 'خوب است اما کمی کوچک است. برای قهوه صبحگاهی مناسب است.',
     date: new Date('2024-01-18')
   },
   {
     id: '3',
-    productId: '2',
-    userName: 'حسن رضایی',
+    productId: '1',
+    userName: 'رضا نوری',
     rating: 5,
-    comment: 'طراحی روستیک فوق‌العاده‌ای دارد.',
-    date: new Date('2024-01-22')
+    comment: 'کیفیت سرامیک عالی است. در ماشین ظرف‌شویی هم قابل شست‌وشو است.',
+    date: new Date('2024-01-15')
   },
   {
     id: '4',
-    productId: '3',
-    userName: 'مریم کریمی',
-    rating: 4,
-    comment: 'رنگ مشکی مات خیلی شیک است.',
-    date: new Date('2024-02-02')
+    productId: '1',
+    userName: 'سارا احمدی',
+    rating: 5,
+    comment: 'ماگ مورد علاقه‌ام شد. هر روز از آن استفاده می‌کنم.',
+    date: new Date('2024-01-12')
   },
   {
     id: '5',
-    productId: '3',
+    productId: '2',
+    userName: 'حسن رضایی',
+    rating: 5,
+    comment: 'طراحی روستیک فوق‌العاده‌ای دارد. برای دکوراسیون خانه عالی است.',
+    date: new Date('2024-01-22')
+  },
+  {
+    id: '6',
+    productId: '2',
+    userName: 'مریم کریمی',
+    rating: 4,
+    comment: 'رنگ قهوه‌ای مات خیلی شیک است. کمی سنگین است اما کیفیت خوبی دارد.',
+    date: new Date('2024-01-19')
+  },
+  {
+    id: '7',
+    productId: '2',
     userName: 'محمد صادقی',
     rating: 5,
-    comment: 'کیفیت عالی و قیمت مناسب.',
+    comment: 'کیفیت عالی و قیمت مناسب. برای هدیه دادن عالی است.',
+    date: new Date('2024-01-16')
+  },
+  {
+    id: '8',
+    productId: '3',
+    userName: 'نرگس رضایی',
+    rating: 4,
+    comment: 'رنگ مشکی مات خیلی شیک است. برای محیط کار عالی است.',
+    date: new Date('2024-02-02')
+  },
+  {
+    id: '9',
+    productId: '3',
+    userName: 'امیر حسینی',
+    rating: 5,
+    comment: 'طراحی مینیمال و زیبا. کیفیت ساخت عالی است.',
     date: new Date('2024-02-01')
+  },
+  {
+    id: '10',
+    productId: '3',
+    userName: 'زهرا محمدی',
+    rating: 5,
+    comment: 'ماگ مورد علاقه‌ام شد. هر روز از آن استفاده می‌کنم.',
+    date: new Date('2024-01-28')
+  },
+  {
+    id: '11',
+    productId: '4',
+    userName: 'حسین احمدی',
+    rating: 5,
+    comment: 'رنگ آبی روشن خیلی زیبا است. برای صبحانه عالی است.',
+    date: new Date('2024-01-25')
+  },
+  {
+    id: '12',
+    productId: '4',
+    userName: 'فاطمه کریمی',
+    rating: 4,
+    comment: 'کیفیت خوبی دارد. کمی کوچک است اما قابل قبول است.',
+    date: new Date('2024-01-22')
+  },
+  {
+    id: '13',
+    productId: '5',
+    userName: 'علی رضایی',
+    rating: 5,
+    comment: 'طراحی مدرن و زیبا. برای دکوراسیون عالی است.',
+    date: new Date('2024-01-20')
+  },
+  {
+    id: '14',
+    productId: '5',
+    userName: 'مریم صادقی',
+    rating: 5,
+    comment: 'کیفیت عالی و قیمت مناسب. کاملاً راضی هستم.',
+    date: new Date('2024-01-18')
+  },
+  {
+    id: '15',
+    productId: '6',
+    userName: 'محمد نوری',
+    rating: 4,
+    comment: 'رنگ سبز روشن خیلی زیبا است. برای محیط کار عالی است.',
+    date: new Date('2024-01-15')
+  },
+  {
+    id: '16',
+    productId: '6',
+    userName: 'سارا احمدی',
+    rating: 5,
+    comment: 'ماگ مورد علاقه‌ام شد. هر روز از آن استفاده می‌کنم.',
+    date: new Date('2024-01-12')
+  },
+  {
+    id: '17',
+    productId: '7',
+    userName: 'حسن کریمی',
+    rating: 5,
+    comment: 'طراحی کلاسیک و زیبا. کیفیت ساخت عالی است.',
+    date: new Date('2024-01-10')
+  },
+  {
+    id: '18',
+    productId: '7',
+    userName: 'فاطمه رضایی',
+    rating: 4,
+    comment: 'رنگ قرمز روشن خیلی زیبا است. برای صبحانه عالی است.',
+    date: new Date('2024-01-08')
+  },
+  {
+    id: '19',
+    productId: '8',
+    userName: 'رضا محمدی',
+    rating: 5,
+    comment: 'کیفیت عالی و قیمت مناسب. برای هدیه دادن عالی است.',
+    date: new Date('2024-01-05')
+  },
+  {
+    id: '20',
+    productId: '8',
+    userName: 'نرگس احمدی',
+    rating: 5,
+    comment: 'ماگ مورد علاقه‌ام شد. هر روز از آن استفاده می‌کنم.',
+    date: new Date('2024-01-02')
   }
 ];
 
@@ -57,8 +177,8 @@ export const products: Product[] = [
     popularity: 95,
     stockCount: 50,
     reviews: mockReviews.filter(r => r.productId === '1'),
-    averageRating: 4.5,
-    reviewCount: 2
+    averageRating: 4.75,
+    reviewCount: 4
   },
   {
     id: '2',
@@ -72,8 +192,8 @@ export const products: Product[] = [
     popularity: 88,
     stockCount: 30,
     reviews: mockReviews.filter(r => r.productId === '2'),
-    averageRating: 5.0,
-    reviewCount: 1
+    averageRating: 4.67,
+    reviewCount: 3
   },
   {
     id: '3',
@@ -88,8 +208,8 @@ export const products: Product[] = [
     popularity: 92,
     stockCount: 25,
     reviews: mockReviews.filter(r => r.productId === '3'),
-    averageRating: 4.5,
-    reviewCount: 2
+    averageRating: 4.67,
+    reviewCount: 3
   },
   {
     id: '4',
@@ -101,7 +221,10 @@ export const products: Product[] = [
     inStock: true,
     createdAt: new Date('2024-01-25'),
     popularity: 78,
-    stockCount: 3
+    stockCount: 3,
+    reviews: mockReviews.filter(r => r.productId === '4'),
+    averageRating: 4.5,
+    reviewCount: 2
   },
   {
     id: '5',
@@ -114,7 +237,10 @@ export const products: Product[] = [
     inStock: true,
     createdAt: new Date('2024-01-10'),
     popularity: 85,
-    stockCount: 2
+    stockCount: 2,
+    reviews: mockReviews.filter(r => r.productId === '5'),
+    averageRating: 5.0,
+    reviewCount: 2
   },
   {
     id: '6',
@@ -123,7 +249,10 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     description: 'ماگ شیشه‌ای با طراحی مینیمال؛ مناسب برای نمایش زیبای نوشیدنی.',
     category: 'مدرن',
-    inStock: false
+    inStock: false,
+    reviews: mockReviews.filter(r => r.productId === '6'),
+    averageRating: 4.5,
+    reviewCount: 2
   }
   ,
   {
@@ -133,7 +262,10 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     description: 'ترکیب ظرافت و دوام با طرح سنگ مرمر؛ مناسب محیط‌های مدرن.',
     category: 'مدرن',
-    inStock: true
+    inStock: true,
+    reviews: mockReviews.filter(r => r.productId === '7'),
+    averageRating: 4.5,
+    reviewCount: 2
   },
   {
     id: '8',
@@ -142,7 +274,10 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     description: 'ترکیب سرامیک و چوب طبیعی؛ حس روستیک و گرم.',
     category: 'روستیک',
-    inStock: true
+    inStock: true,
+    reviews: mockReviews.filter(r => r.productId === '8'),
+    averageRating: 5.0,
+    reviewCount: 2
   },
   {
     id: '9',

@@ -92,7 +92,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4 animate-in fade-in duration-300"
+      className="fixed inset-0 z-50 bg-black bg-opacity-60 backdrop-blur-sm animate-in fade-in duration-300"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
@@ -105,8 +105,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
     >
       <div 
         ref={focusTrapRef as React.RefObject<HTMLDivElement>}
-        className="bg-white dark:bg-gray-800 w-full max-w-4xl lg:max-w-6xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 max-h-[90vh] flex flex-col mx-4 sm:mx-0"
+        className="h-full w-full overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
       >
+        <div className="min-h-full flex items-center justify-center p-2 sm:p-4 lg:p-8">
+          <div className="bg-white dark:bg-gray-800 w-full max-w-4xl lg:max-w-6xl my-4 sm:my-8 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[95vh]">
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -123,7 +126,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
           </button>
         </div>
 
-        <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 flex-1 min-h-0">
+        <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 flex-1 min-h-0 overflow-y-auto">
           <div className="relative aspect-square sm:aspect-square w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-700 group">
             <img
               ref={imageRef}
@@ -232,7 +235,21 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
           <div className="space-y-4 sm:space-y-6">
             {/* Product Rating - Clickable to show reviews */}
             <button 
-              onClick={() => setShowReviews(!showReviews)}
+              onClick={() => {
+                setShowReviews(!showReviews);
+                if (!showReviews) {
+                  // Scroll to comments section after a short delay
+                  setTimeout(() => {
+                    const commentsSection = document.getElementById('comments-section');
+                    if (commentsSection) {
+                      commentsSection.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                      });
+                    }
+                  }, 300);
+                }
+              }}
               className={`flex items-center justify-between w-full text-right p-3 rounded-lg transition-all duration-200 border ${
                 showReviews 
                   ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' 
@@ -443,8 +460,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
 
       {/* Collapsible Reviews Section - Outside main content */}
       {showReviews && (
-        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <div className="px-6 py-4 max-h-[40vh] overflow-y-auto scrollbar-hide">
+        <div id="comments-section" className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="px-6 py-4 max-h-[50vh] overflow-y-auto scrollbar-hide">
             <div className="animate-in slide-in-from-bottom-4 duration-300">
               <Reviews
                 reviews={product.reviews || []}
@@ -455,6 +472,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
           </div>
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 };

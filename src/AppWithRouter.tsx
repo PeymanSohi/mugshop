@@ -24,7 +24,7 @@ import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import AnimatedBackground from './components/AnimatedBackground';
 
 function HomePage() {
-  const { cart, auth, addToCart, toggleWishlist, isInWishlist, isLoading } = useAppContext();
+  const { cart, auth, addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, isLoading } = useAppContext();
   
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
@@ -377,8 +377,8 @@ function HomePage() {
         cart={cart}
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
-        onUpdateQuantity={() => {}}
-        onRemoveItem={() => {}}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
         user={auth.user}
         onLoginToggle={() => setIsLoginOpen(true)}
       />
