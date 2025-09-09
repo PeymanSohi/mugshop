@@ -61,7 +61,10 @@ export interface WishlistState {
 }
 
 export interface FilterState {
-  selectedCategories: string[];
-  priceRange: { min: number; max: number };
-  inStockOnly: boolean;
+  categories: string[];
+  priceRange: [number, number];
+  minRating: number;
+  inStock: boolean;
+  onSale: boolean;
+  sortBy: 'relevance' | 'price-asc' | 'price-desc' | 'newest' | 'popularity' | 'rating';
 }

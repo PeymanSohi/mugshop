@@ -22,6 +22,7 @@ import { products, categories } from './data/products';
 import { Product, SortOption, PaginationState, FilterState } from './types';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import AnimatedBackground from './components/AnimatedBackground';
+import FilterChips from './components/FilterChips';
 
 function HomePage() {
   const { cart, auth, addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, isLoading } = useAppContext();
@@ -39,10 +40,19 @@ function HomePage() {
   const itemsPerPage = 12;
   
   // Advanced filters state
+  // Calculate actual price range from products
+  const priceRange = useMemo(() => {
+    const prices = products.map(p => p.salePrice || p.price);
+    return [Math.min(...prices), Math.max(...prices)] as [number, number];
+  }, [products]);
+
   const [filters, setFilters] = useState<FilterState>({
-    selectedCategories: [],
-    priceRange: { min: 0, max: 1000 },
-    inStockOnly: false
+    categories: [],
+    priceRange: priceRange,
+    minRating: 0,
+    inStock: false,
+    onSale: false,
+    sortBy: 'relevance'
   });
   
   // Debounced search term
@@ -51,10 +61,12 @@ function HomePage() {
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
 
   // Check if there are active filters
-  const hasActiveFilters = filters.selectedCategories.length > 0 || 
-                          filters.priceRange.min > 0 || 
-                          filters.priceRange.max < 1000 || 
-                          filters.inStockOnly;
+  const hasActiveFilters = filters.categories.length > 0 || 
+                          filters.priceRange[0] > priceRange[0] || 
+                          filters.priceRange[1] < priceRange[1] || 
+                          filters.minRating > 0 ||
+                          filters.inStock ||
+                          filters.onSale;
 
   // Filter, sort, and paginate products
   const { filteredProducts, pagination } = useMemo(() => {
@@ -62,30 +74,37 @@ function HomePage() {
     let filtered = products.filter(product => {
       // Search filter
       const matchesSearch = product.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-                           product.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
+                           product.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+                           product.category.toLowerCase().includes(debouncedSearchTerm.toLowerCase());
       
       // Category filter (legacy support)
       const matchesLegacyCategory = selectedCategory === 'همه' || product.category === selectedCategory;
       
       // Advanced category filter
-      const matchesAdvancedCategory = filters.selectedCategories.length === 0 || 
-                                     filters.selectedCategories.includes(product.category);
+      const matchesAdvancedCategory = filters.categories.length === 0 || 
+                                     filters.categories.includes(product.category);
       
       // Price range filter
       const productPrice = product.salePrice || product.price;
-      const matchesPriceRange = productPrice >= filters.priceRange.min && 
-                               productPrice <= filters.priceRange.max;
+      const matchesPriceRange = productPrice >= filters.priceRange[0] && 
+                               productPrice <= filters.priceRange[1];
+      
+      // Rating filter
+      const matchesRating = filters.minRating === 0 || (product.averageRating || 0) >= filters.minRating;
       
       // Stock filter
-      const matchesStock = !filters.inStockOnly || product.inStock;
+      const matchesStock = !filters.inStock || product.inStock;
+      
+      // Sale filter
+      const matchesSale = !filters.onSale || (product.salePrice && product.salePrice < product.price);
       
       return matchesSearch && matchesLegacyCategory && matchesAdvancedCategory && 
-             matchesPriceRange && matchesStock;
+             matchesPriceRange && matchesRating && matchesStock && matchesSale;
     });
 
     // Sort products
     filtered.sort((a, b) => {
-      switch (sortOption) {
+      switch (filters.sortBy) {
         case 'price-asc':
           return (a.salePrice || a.price) - (b.salePrice || b.price);
         case 'price-desc':
@@ -93,6 +112,10 @@ function HomePage() {
         case 'newest':
           return (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0);
         case 'popularity':
+          return (b.popularity || 0) - (a.popularity || 0);
+        case 'rating':
+          return (b.averageRating || 0) - (a.averageRating || 0);
+        case 'relevance':
         default:
           return (b.popularity || 0) - (a.popularity || 0);
       }
@@ -144,6 +167,57 @@ function HomePage() {
     setIsLoginOpen(false);
   };
 
+  // Enhanced search handlers
+  const handleProductSelect = (product: Product) => {
+    setActiveProduct(product);
+    setIsProductOpen(true);
+  };
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+  };
+
+  // Filter handlers
+  const handleFiltersChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
+  };
+
+  const handleRemoveFilter = (filterType: keyof FilterState) => {
+    switch (filterType) {
+      case 'categories':
+        setFilters(prev => ({ ...prev, categories: [] }));
+        break;
+      case 'priceRange':
+        setFilters(prev => ({ ...prev, priceRange: priceRange }));
+        break;
+      case 'minRating':
+        setFilters(prev => ({ ...prev, minRating: 0 }));
+        break;
+      case 'inStock':
+        setFilters(prev => ({ ...prev, inStock: false }));
+        break;
+      case 'onSale':
+        setFilters(prev => ({ ...prev, onSale: false }));
+        break;
+      case 'sortBy':
+        setFilters(prev => ({ ...prev, sortBy: 'relevance' }));
+        break;
+    }
+  };
+
+  const handleClearAllFilters = () => {
+    setFilters({
+      categories: [],
+      priceRange: priceRange,
+      minRating: 0,
+      inStock: false,
+      onSale: false,
+      sortBy: 'relevance'
+    });
+    setCurrentPage(1);
+  };
+
   const handleLogout = () => {
     // This will be handled by the context
   };
@@ -173,34 +247,6 @@ function HomePage() {
     updateUrl({ search: term, page: '1' });
   };
 
-  const handleCategoryToggle = (category: string) => {
-    setFilters(prev => ({
-      ...prev,
-      selectedCategories: prev.selectedCategories.includes(category)
-        ? prev.selectedCategories.filter(c => c !== category)
-        : [...prev.selectedCategories, category]
-    }));
-    setCurrentPage(1);
-  };
-
-  const handlePriceRangeChange = (range: { min: number; max: number }) => {
-    setFilters(prev => ({ ...prev, priceRange: range }));
-    setCurrentPage(1);
-  };
-
-  const handleInStockToggle = () => {
-    setFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }));
-    setCurrentPage(1);
-  };
-
-  const handleClearAllFilters = () => {
-    setFilters({
-      selectedCategories: [],
-      priceRange: { min: 0, max: 1000 },
-      inStockOnly: false
-    });
-    setCurrentPage(1);
-  };
 
 
   return (
@@ -214,6 +260,10 @@ function HomePage() {
         user={auth.user}
         onLoginToggle={() => setIsLoginOpen(true)}
         onLogout={handleLogout}
+        onProductSelect={handleProductSelect}
+        onCategorySelect={handleCategorySelect}
+        products={products}
+        categories={categories}
       />
 
       <Hero />
@@ -231,6 +281,15 @@ function HomePage() {
           categories={categories}
           selectedCategory={selectedCategory}
           onCategoryChange={handleCategoryChange}
+        />
+
+        {/* Filter Chips */}
+        <FilterChips
+          filters={filters}
+          onRemoveFilter={handleRemoveFilter}
+          onClearAll={handleClearAllFilters}
+          categories={categories}
+          priceRange={priceRange}
         />
 
         {/* Filter and Sort Control Bar */}
@@ -264,9 +323,11 @@ function HomePage() {
               {hasActiveFilters && (
                 <div className="flex items-center gap-2">
                   <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
-                    {filters.selectedCategories.length + 
-                     (filters.priceRange.min > 0 || filters.priceRange.max < 1000 ? 1 : 0) + 
-                     (filters.inStockOnly ? 1 : 0)} فیلتر فعال
+                    {filters.categories.length + 
+                     (filters.priceRange[0] > priceRange[0] || filters.priceRange[1] < priceRange[1] ? 1 : 0) + 
+                     (filters.minRating > 0 ? 1 : 0) +
+                     (filters.inStock ? 1 : 0) +
+                     (filters.onSale ? 1 : 0)} فیلتر فعال
                   </span>
                   <button
                     onClick={handleClearAllFilters}
@@ -315,14 +376,12 @@ function HomePage() {
             {isFiltersOpen && (
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <AdvancedFilters
+                  filters={filters}
+                  onFiltersChange={handleFiltersChange}
+                  products={products}
                   categories={categories.filter(cat => cat !== 'همه')}
-                  selectedCategories={filters.selectedCategories}
-                  onCategoryToggle={handleCategoryToggle}
-                  onClearAll={handleClearAllFilters}
-                  priceRange={filters.priceRange}
-                  onPriceRangeChange={handlePriceRangeChange}
-                  inStockOnly={filters.inStockOnly}
-                  onInStockToggle={handleInStockToggle}
+                  isOpen={isFiltersOpen}
+                  onClose={() => setIsFiltersOpen(false)}
                 />
               </div>
             )}

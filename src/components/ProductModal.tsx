@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Product } from '../types';
-import Reviews from './Reviews';
 import { usePinchZoom } from '../hooks/usePinchZoom';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
@@ -27,7 +26,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
   const imageUrls = composed.length >= 2 ? composed : [composed[0], composed[0]];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [showReviews, setShowReviews] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -233,55 +231,19 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
           </div>
 
           <div className="space-y-4 sm:space-y-6">
-            {/* Product Rating - Clickable to show reviews */}
-            <button 
-              onClick={() => {
-                setShowReviews(!showReviews);
-                if (!showReviews) {
-                  // Scroll to comments section after a short delay
-                  setTimeout(() => {
-                    const commentsSection = document.getElementById('comments-section');
-                    if (commentsSection) {
-                      commentsSection.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                      });
-                    }
-                  }, 300);
-                }
-              }}
-              className={`flex items-center justify-between w-full text-right p-3 rounded-lg transition-all duration-200 border ${
-                showReviews 
-                  ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700' 
-                  : 'hover:bg-gray-50 dark:hover:bg-gray-700 border-gray-200 dark:border-gray-600'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">({product.averageRating?.toFixed(1) || '4.8'})</span>
-                <span className="text-sm text-gray-500 dark:text-gray-500">•</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">{product.reviewCount || 24} نظر</span>
+            {/* Product Rating - Static display */}
+            <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {showReviews ? 'مخفی کردن نظرات' : 'مشاهده نظرات'}
-                </span>
-                <svg 
-                  className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showReviews ? 'rotate-180' : ''}`} 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </button>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">({product.averageRating?.toFixed(1) || '4.8'})</span>
+              <span className="text-sm text-gray-500 dark:text-gray-500">•</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{product.reviewCount || 24} نظر</span>
+            </div>
 
             {/* Product Description */}
             <div>
@@ -458,20 +420,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
 
       </div>
 
-      {/* Collapsible Reviews Section - Outside main content */}
-      {showReviews && (
-        <div id="comments-section" className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <div className="px-6 py-4 max-h-[50vh] overflow-y-auto scrollbar-hide">
-            <div className="animate-in slide-in-from-bottom-4 duration-300">
-              <Reviews
-                reviews={product.reviews || []}
-                averageRating={product.averageRating || 0}
-                reviewCount={product.reviewCount || 0}
-              />
-            </div>
-          </div>
-        </div>
-      )}
         </div>
       </div>
     </div>

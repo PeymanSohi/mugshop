@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Coffee, ShoppingCart, Search, User, LogOut, Menu, X } from 'lucide-react';
-import { User as UserType } from '../types';
+import { Coffee, ShoppingCart, User, LogOut, Menu, X } from 'lucide-react';
+import { User as UserType, Product } from '../types';
+import EnhancedSearch from './EnhancedSearch';
 
 interface HeaderProps {
   cartItemCount: number;
@@ -10,6 +11,10 @@ interface HeaderProps {
   user: UserType | null;
   onLoginToggle: () => void;
   onLogout: () => void;
+  onProductSelect: (product: Product) => void;
+  onCategorySelect: (category: string) => void;
+  products: Product[];
+  categories: string[];
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -19,7 +24,11 @@ const Header: React.FC<HeaderProps> = ({
   onSearchChange, 
   user, 
   onLoginToggle, 
-  onLogout 
+  onLogout,
+  onProductSelect,
+  onCategorySelect,
+  products,
+  categories
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleMobile = () => setMobileOpen(v => !v);
@@ -45,18 +54,18 @@ const Header: React.FC<HeaderProps> = ({
             {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
 
-          {/* Search Bar (desktop) */}
-          <div className="hidden md:block flex-1 max-w-md mx-8 relative">
-            <div className="relative">
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <input
-                type="text"
-                placeholder="جستجوی ماگ..."
-                value={searchTerm}
-                onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200"
-              />
-            </div>
+          {/* Enhanced Search Bar (desktop) */}
+          <div className="hidden md:block flex-1 max-w-md mx-8">
+            <EnhancedSearch
+              searchTerm={searchTerm}
+              onSearchChange={onSearchChange}
+              onProductSelect={onProductSelect}
+              onCategorySelect={onCategorySelect}
+              products={products}
+              categories={categories}
+              isOpen={false}
+              onClose={() => {}}
+            />
           </div>
 
           {/* User Actions (desktop) */}
@@ -109,16 +118,16 @@ const Header: React.FC<HeaderProps> = ({
       >
         <div className="absolute inset-0 bg-black/40" onClick={closeMobile} />
         <div className="absolute top-0 bottom-0 right-0 w-80 bg-white shadow-xl p-4 flex flex-col gap-4">
-          <div className="relative">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <input
-              type="text"
-              placeholder="جستجوی ماگ..."
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pr-10 pl-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
-            />
-          </div>
+          <EnhancedSearch
+            searchTerm={searchTerm}
+            onSearchChange={onSearchChange}
+            onProductSelect={onProductSelect}
+            onCategorySelect={onCategorySelect}
+            products={products}
+            categories={categories}
+            isOpen={false}
+            onClose={() => {}}
+          />
 
           {user ? (
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
