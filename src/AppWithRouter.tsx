@@ -4,6 +4,7 @@ import { useDebounce } from './hooks/useDebounce';
 import { useUrlState } from './hooks/useUrlState';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { ToastProvider } from './context/ToastContext';
+import { UserProvider, useUser } from './context/UserContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ProductCard from './components/ProductCard';
@@ -14,6 +15,8 @@ import Pagination from './components/Pagination';
 import Cart from './components/Cart';
 import MiniCart from './components/MiniCart';
 import LoginModal from './components/LoginModal';
+import RegisterModal from './components/RegisterModal';
+import UserDashboardModal from './components/UserDashboardModal';
 import Footer from './components/Footer';
 import ProductPage from './pages/ProductPage';
 import ResponsiveContainer from './components/ResponsiveContainer';
@@ -26,10 +29,13 @@ import FilterChips from './components/FilterChips';
 
 function HomePage() {
   const { cart, auth, addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, isLoading } = useAppContext();
+  const { user, orders, isAuthenticated, login, register, logout, updateProfile, addAddress, updateAddress, deleteAddress } = useUser();
   
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   // URL state management
   const { urlState, updateUrl } = useUrlState();
@@ -162,10 +168,6 @@ function HomePage() {
     setIsMiniCartOpen(true);
   };
 
-  const handleLogin = (_email: string, _name: string) => {
-    // This will be handled by the context
-    setIsLoginOpen(false);
-  };
 
   // Enhanced search handlers
   const handleProductSelect = (product: Product) => {
@@ -218,8 +220,53 @@ function HomePage() {
     setCurrentPage(1);
   };
 
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      await login(email, password);
+      setIsLoginOpen(false);
+    } catch (error) {
+      console.error('Login failed:', error);
+      // You could show a toast notification here
+    }
+  };
+
+  const handleRegister = async (userData: {
+    name: string;
+    email: string;
+    password: string;
+    phone?: string;
+    dateOfBirth?: Date;
+    gender?: 'male' | 'female' | 'other';
+  }) => {
+    try {
+      await register(userData);
+      setIsRegisterOpen(false);
+    } catch (error) {
+      console.error('Registration failed:', error);
+      // You could show a toast notification here
+    }
+  };
+
   const handleLogout = () => {
-    // This will be handled by the context
+    logout();
+  };
+
+  const handleSwitchToRegister = () => {
+    setIsLoginOpen(false);
+    setIsRegisterOpen(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setIsRegisterOpen(false);
+    setIsLoginOpen(true);
+  };
+
+  const handleOpenDashboard = () => {
+    if (isAuthenticated && user) {
+      setIsDashboardOpen(true);
+    } else {
+      setIsLoginOpen(true);
+    }
   };
 
   const handleSortChange = (sort: SortOption) => {
@@ -257,8 +304,10 @@ function HomePage() {
         onCartToggle={() => setIsCartOpen(true)}
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
-        user={auth.user}
+        user={user}
+        isAuthenticated={isAuthenticated}
         onLoginToggle={() => setIsLoginOpen(true)}
+        onDashboardToggle={handleOpenDashboard}
         onLogout={handleLogout}
         onProductSelect={handleProductSelect}
         onCategorySelect={handleCategorySelect}
@@ -450,6 +499,8 @@ function HomePage() {
           setIsMiniCartOpen(false);
           setIsCartOpen(true);
         }}
+        onUpdateQuantity={updateQuantity}
+        onRemoveItem={removeFromCart}
       />
 
       <ProductModal
@@ -464,6 +515,26 @@ function HomePage() {
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
         onLogin={handleLogin}
+        onSwitchToRegister={handleSwitchToRegister}
+      />
+
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onRegister={handleRegister}
+        onSwitchToLogin={handleSwitchToLogin}
+      />
+
+      <UserDashboardModal
+        isOpen={isDashboardOpen}
+        onClose={() => setIsDashboardOpen(false)}
+        user={user!}
+        orders={orders}
+        onLogout={logout}
+        onUpdateProfile={updateProfile}
+        onAddAddress={addAddress}
+        onUpdateAddress={updateAddress}
+        onDeleteAddress={deleteAddress}
       />
     </div>
   );
@@ -472,14 +543,16 @@ function HomePage() {
 function App() {
   return (
     <ToastProvider>
-      <AppProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/product/:id" element={<ProductPage />} />
-          </Routes>
-        </Router>
-      </AppProvider>
+      <UserProvider>
+        <AppProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/product/:id" element={<ProductPage />} />
+            </Routes>
+          </Router>
+        </AppProvider>
+      </UserProvider>
     </ToastProvider>
   );
 }

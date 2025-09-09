@@ -9,7 +9,9 @@ interface HeaderProps {
   searchTerm: string;
   onSearchChange: (term: string) => void;
   user: UserType | null;
+  isAuthenticated: boolean;
   onLoginToggle: () => void;
+  onDashboardToggle: () => void;
   onLogout: () => void;
   onProductSelect: (product: Product) => void;
   onCategorySelect: (category: string) => void;
@@ -23,7 +25,9 @@ const Header: React.FC<HeaderProps> = ({
   searchTerm, 
   onSearchChange, 
   user, 
+  isAuthenticated,
   onLoginToggle, 
+  onDashboardToggle,
   onLogout,
   onProductSelect,
   onCategorySelect,
@@ -70,12 +74,15 @@ const Header: React.FC<HeaderProps> = ({
 
           {/* User Actions (desktop) */}
           <div className="hidden md:flex items-center space-x-3 rtl:space-x-reverse">
-            {user ? (
+            {isAuthenticated && user ? (
               <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                <div className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700">
+                <button
+                  onClick={onDashboardToggle}
+                  className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                >
                   <User className="h-5 w-5" />
                   <span className="font-medium">{user.name}</span>
-                </div>
+                </button>
                 <button
                   onClick={onLogout}
                   className="text-gray-600 hover:text-gray-800 transition-colors duration-200 flex items-center space-x-1 rtl:space-x-reverse"
@@ -129,12 +136,15 @@ const Header: React.FC<HeaderProps> = ({
             onClose={() => {}}
           />
 
-          {user ? (
+          {isAuthenticated && user ? (
             <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
-              <div className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700">
+              <button
+                onClick={() => { onDashboardToggle(); closeMobile(); }}
+                className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 hover:text-blue-600 transition-colors duration-200"
+              >
                 <User className="h-5 w-5" />
                 <span className="font-medium">{user.name}</span>
-              </div>
+              </button>
               <button onClick={() => { onLogout(); closeMobile(); }} className="text-gray-700 hover:text-gray-900 flex items-center gap-1">
                 <LogOut className="h-4 w-4" /> خروج
               </button>

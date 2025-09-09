@@ -40,6 +40,53 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  phone?: string;
+  avatar?: string;
+  dateOfBirth?: Date;
+  gender?: 'male' | 'female' | 'other';
+  createdAt: Date;
+  lastLogin?: Date;
+  preferences?: UserPreferences;
+  addresses?: Address[];
+}
+
+export interface UserPreferences {
+  language: 'fa' | 'en';
+  currency: 'IRR' | 'USD';
+  notifications: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
+  theme: 'light' | 'dark' | 'auto';
+}
+
+export interface Address {
+  id: string;
+  type: 'home' | 'work' | 'other';
+  title: string;
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  isDefault: boolean;
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  total: number;
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  shippingAddress: Address;
+  paymentMethod: 'cash' | 'card' | 'online';
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  createdAt: Date;
+  updatedAt: Date;
+  trackingNumber?: string;
+  notes?: string;
 }
 
 export interface AuthState {
