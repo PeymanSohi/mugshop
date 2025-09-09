@@ -1,68 +1,71 @@
 import React from 'react';
 import { Coffee, Mail, Phone, MapPin } from 'lucide-react';
+import ResponsiveContainer from './ResponsiveContainer';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="bg-gray-900 dark:bg-gray-950 text-white">
+      <ResponsiveContainer maxWidth="3xl" padding="lg" className="py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Coffee className="h-8 w-8 text-amber-400" />
-              <h3 className="text-2xl font-bold">ماگ‌کرفت</h3>
+              <Coffee className="h-6 w-6 sm:h-8 sm:w-8 text-primary-400" />
+              <h3 className="text-xl sm:text-2xl font-bold">ماگ‌کرفت</h3>
             </div>
-            <p className="text-gray-300 mb-4">
+            <p className="text-gray-300 mb-4 text-sm sm:text-base leading-relaxed">
               ماگ‌های دست‌ساز و باکیفیت برای علاقه‌مندان حرفه‌ای قهوه.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">لینک‌های سریع</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-amber-400 transition-colors">درباره ما</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">داستان ما</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">سفارش سفارشی</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">عمده‌فروشی</a></li>
+            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">لینک‌های سریع</h4>
+            <ul className="space-y-2 text-gray-300 text-sm sm:text-base">
+              <li><a href="#" className="hover:text-primary-400 transition-colors">درباره ما</a></li>
+              <li><a href="#" className="hover:text-primary-400 transition-colors">داستان ما</a></li>
+              <li><a href="#" className="hover:text-primary-400 transition-colors">سفارش سفارشی</a></li>
+              <li><a href="#" className="hover:text-primary-400 transition-colors">عمده‌فروشی</a></li>
             </ul>
           </div>
 
           {/* Customer Service */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">خدمات مشتریان</h4>
-            <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-amber-400 transition-colors">اطلاعات ارسال</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">بازگشت کالا</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">راهنمای اندازه</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">راهنمای نگهداری</a></li>
+            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">خدمات مشتریان</h4>
+            <ul className="space-y-2 text-gray-300 text-sm sm:text-base">
+              <li><a href="#" className="hover:text-primary-400 transition-colors">اطلاعات ارسال</a></li>
+              <li><a href="#" className="hover:text-primary-400 transition-colors">بازگشت کالا</a></li>
+              <li><a href="#" className="hover:text-primary-400 transition-colors">راهنمای اندازه</a></li>
+              <li><a href="#" className="hover:text-primary-400 transition-colors">راهنمای نگهداری</a></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">تماس با ما</h4>
-            <div className="space-y-3 text-gray-300">
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                <span>hello@mugcraft.com</span>
+            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">تماس با ما</h4>
+            <div className="space-y-3 text-gray-300 text-sm sm:text-base">
+              <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
+                <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span className="break-all">hello@mugcraft.com</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
+              <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
+                <Phone className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                 <span>(555) 123-4567</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
+              <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
+                <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                 <span>پورتلند، اورِگون</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-          <p>© ۲۰۲۵ ماگ‌کرفت. کلیه حقوق محفوظ است. با عشق ساخته‌شده در پورتلند.</p>
+        <div className="border-t border-gray-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-gray-300">
+          <p className="text-xs sm:text-sm leading-relaxed">
+            © ۲۰۲۵ ماگ‌کرفت. کلیه حقوق محفوظ است. با عشق ساخته‌شده در پورتلند.
+          </p>
         </div>
-      </div>
+      </ResponsiveContainer>
     </footer>
   );
 };

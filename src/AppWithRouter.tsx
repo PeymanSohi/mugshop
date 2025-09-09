@@ -16,6 +16,8 @@ import MiniCart from './components/MiniCart';
 import LoginModal from './components/LoginModal';
 import Footer from './components/Footer';
 import ProductPage from './pages/ProductPage';
+import ResponsiveContainer from './components/ResponsiveContainer';
+import ResponsiveGrid from './components/ResponsiveGrid';
 import { products, categories } from './data/products';
 import { Product, CartState, CartItem, AuthState, SortOption, PaginationState, WishlistState, FilterState } from './types';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
@@ -194,7 +196,7 @@ function HomePage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <AnimatedBackground />
       <Header
         cartItemCount={cart.itemCount}
@@ -208,10 +210,11 @@ function HomePage() {
 
       <Hero />
 
-      <main id="products" className="max-w-7xl mx-auto px-4 tb:px-6 lp:px-8 py-12">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">مجموعه ما</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+      <main id="products" className="py-8 sm:py-12">
+        <ResponsiveContainer maxWidth="3xl" padding="lg">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">مجموعه ما</h2>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
             مجموعه‌ای از ماگ‌های باکیفیت که تجربه نوشیدن شما را لذت‌بخش‌تر می‌کند.
           </p>
         </div>
@@ -223,22 +226,22 @@ function HomePage() {
         />
 
         {/* Filter and Sort Control Bar */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4 mb-4 sm:mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Left Side - Filter Toggle */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all duration-200 text-sm min-h-[44px] ${
                   hasActiveFilters 
-                    ? 'bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 shadow-sm' 
-                    : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200'
+                    ? 'bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 text-primary-800 dark:text-primary-200 border border-primary-300 dark:border-primary-700 shadow-sm' 
+                    : 'bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600'
                 }`}
               >
                 <Filter className="h-4 w-4" />
                 <span className="font-medium">فیلترها</span>
                 {hasActiveFilters && (
-                  <span className="bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                  <span className="bg-primary-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
                     !
                   </span>
                 )}
@@ -252,14 +255,14 @@ function HomePage() {
               {/* Active Filter Count and Clear All */}
               {hasActiveFilters && (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
                     {filters.selectedCategories.length + 
                      (filters.priceRange.min > 0 || filters.priceRange.max < 1000 ? 1 : 0) + 
                      (filters.inStockOnly ? 1 : 0)} فیلتر فعال
                   </span>
                   <button
                     onClick={handleClearAllFilters}
-                    className="text-sm text-red-600 hover:text-red-800 hover:bg-red-50 px-2 py-1 rounded transition-colors duration-200"
+                    className="text-xs sm:text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900 px-2 py-1 rounded transition-colors duration-200"
                   >
                     پاک کردن همه
                   </button>
@@ -268,30 +271,30 @@ function HomePage() {
             </div>
 
             {/* Right Side - Results Count and Sort Options */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
               {/* Results Counter */}
-              <div className="text-sm text-gray-600">
-                <span className="font-medium text-gray-900">{filteredProducts.length}</span>
+              <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                <span className="font-medium text-gray-900 dark:text-white">{filteredProducts.length}</span>
                 <span> محصول از </span>
-                <span className="font-medium text-gray-900">{products.length}</span>
+                <span className="font-medium text-gray-900 dark:text-white">{products.length}</span>
                 <span> محصول</span>
               </div>
               
               {/* Sort Options */}
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">مرتب‌سازی:</span>
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <span className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200 whitespace-nowrap">مرتب‌سازی:</span>
                 <div className="relative">
                   <select
                     value={sortOption}
                     onChange={(e) => handleSortChange(e.target.value as SortOption)}
-                    className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-gray-700 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all duration-200 min-w-[180px]"
+                    className="appearance-none bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-3 sm:px-4 py-2 pr-6 sm:pr-8 text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-xs sm:text-sm min-w-[140px] sm:min-w-[180px]"
                   >
                     <option value="popularity">محبوب‌ترین</option>
                     <option value="newest">جدیدترین</option>
                     <option value="price-asc">قیمت: کم به زیاد</option>
                     <option value="price-desc">قیمت: زیاد به کم</option>
                   </select>
-                  <ChevronDown className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                  <ChevronDown className="absolute left-1 sm:left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -302,7 +305,7 @@ function HomePage() {
             isFiltersOpen ? 'max-h-screen opacity-100 mt-4' : 'max-h-0 opacity-0'
           }`}>
             {isFiltersOpen && (
-              <div className="border-t border-gray-200 pt-4">
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <AdvancedFilters
                   categories={categories.filter(cat => cat !== 'همه')}
                   selectedCategories={filters.selectedCategories}
@@ -318,7 +321,11 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 tb:grid-cols-2 lp:grid-cols-3 dt:grid-cols-4 gap-6 tb:gap-7 lp:gap-8">
+        <ResponsiveGrid
+          cols={{ default: 1, sm: 1, md: 2, lg: 3, xl: 4, '2xl': 4 }}
+          gap="md"
+          className="mb-8 sm:mb-12"
+        >
           {filteredProducts.map(product => (
             <ProductCard
               key={product.id}
@@ -331,7 +338,7 @@ function HomePage() {
               isLoading={isLoading}
             />
           ))}
-        </div>
+        </ResponsiveGrid>
 
         <Pagination
           pagination={pagination}
@@ -339,20 +346,21 @@ function HomePage() {
         />
 
         {filteredProducts.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">محصولی مطابق فیلترها یافت نشد.</p>
+          <div className="text-center py-8 sm:py-12">
+            <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg">محصولی مطابق فیلترها یافت نشد.</p>
             <button
               onClick={() => {
                 setSelectedCategory('همه');
                 setSearchTerm('');
                 handleClearAllFilters();
               }}
-              className="mt-4 text-amber-700 hover:text-amber-800 font-medium"
+              className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm sm:text-base"
             >
               پاک کردن فیلترها
             </button>
           </div>
         )}
+        </ResponsiveContainer>
       </main>
 
       <Footer />
