@@ -51,13 +51,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="cursor-pointer"
           onClick={onOpen}
         >
-        <ResponsiveImage
-          src={product.image}
-          alt={product.name}
-          aspectRatio="4/3"
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          <ResponsiveImage
+            src={product.image}
+            alt={product.name}
+            aspectRatio="4/3"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="transition-transform duration-300 group-hover:scale-110"
-        />
+          />
         </motion.div>
         
         {!product.inStock && (
@@ -206,74 +206,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </div>
     </motion.div>
-  );
-};
-
-export default ProductCard;
-
-        )}
-      </div>
-      
-      <div className="p-3 sm:p-4 lg:p-6">
-        <div className="mb-2">
-          <span className="inline-block bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 text-xs px-2 py-1 rounded-full font-medium">
-            {product.category}
-          </span>
-        </div>
-        
-        <h3 className="text-sm sm:text-lg lg:text-xl font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
-          <HighlightText text={product.name} searchTerm={searchTerm || ''} />
-        </h3>
-        <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
-          <HighlightText text={product.description} searchTerm={searchTerm || ''} />
-        </p>
-        
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-          <div className="flex flex-col">
-            {product.salePrice ? (
-              <>
-                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-700 dark:text-primary-400">
-                  {formatPersianPrice(product.salePrice)}
-                </div>
-                <div className="text-sm sm:text-base lg:text-lg text-gray-500 dark:text-gray-400 line-through">
-                  {formatPersianPrice(product.price)}
-                </div>
-              </>
-            ) : (
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-700 dark:text-primary-400">
-                {formatPersianPrice(product.price)}
-              </div>
-            )}
-            
-            {/* Free Shipping Badge */}
-            {(product.salePrice || product.price) >= 50 && (
-              <div className="text-xs text-green-600 dark:text-green-400 font-medium mt-1 flex items-center gap-1">
-                <span>🚚</span>
-                <span>ارسال رایگان</span>
-              </div>
-            )}
-          </div>
-          
-          <button
-            onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-            disabled={!product.inStock || isLoading}
-            className={`flex items-center justify-center gap-1 sm:gap-2 px-3 py-2 sm:px-4 rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm min-h-[44px] ${
-              product.inStock && !isLoading
-                ? 'bg-primary-600 text-white hover:bg-primary-700 hover:scale-105'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            {isLoading ? (
-              <LoadingSpinner size="sm" />
-            ) : (
-              <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" />
-            )}
-            <span className="hidden sm:inline">{isLoading ? 'در حال افزودن...' : 'افزودن به سبد'}</span>
-            <span className="sm:hidden">{isLoading ? 'افزودن...' : 'افزودن'}</span>
-          </button>
-        </div>
-      </div>
-    </div>
   );
 };
 

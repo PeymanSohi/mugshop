@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useDebounce } from './hooks/useDebounce';
 import { useUrlState } from './hooks/useUrlState';
 import { AppProvider, useAppContext } from './context/AppContext';
@@ -28,6 +29,7 @@ import AnimatedBackground from './components/AnimatedBackground';
 import FilterChips from './components/FilterChips';
 
 function HomePage() {
+  const { t } = useTranslation();
   const { cart, auth, addToCart, removeFromCart, updateQuantity, toggleWishlist, isInWishlist, isLoading } = useAppContext();
   const { user, orders, isAuthenticated, login, register, logout, updateProfile, addAddress, updateAddress, deleteAddress } = useUser();
   
@@ -320,10 +322,10 @@ function HomePage() {
       <main id="products" className="py-8 sm:py-12">
         <ResponsiveContainer maxWidth="3xl" padding="lg">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">مجموعه ما</h2>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{t('products.title')}</h2>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            مجموعه‌ای از ماگ‌های باکیفیت که تجربه نوشیدن شما را لذت‌بخش‌تر می‌کند.
-          </p>
+              {t('products.subtitle')}
+            </p>
         </div>
 
         <CategoryFilter
@@ -463,7 +465,7 @@ function HomePage() {
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-8 sm:py-12">
-            <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg">محصولی مطابق فیلترها یافت نشد.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg">{t('products.noResults')}</p>
             <button
               onClick={() => {
                 setSelectedCategory('همه');
@@ -472,7 +474,7 @@ function HomePage() {
               }}
               className="mt-4 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium text-sm sm:text-base"
             >
-              پاک کردن فیلترها
+              {t('products.clearFilters')}
             </button>
           </div>
         )}

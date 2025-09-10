@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+            {/* Logo */}
             <motion.div 
               className="flex items-center space-x-2 rtl:space-x-reverse"
               whileHover={{ scale: 1.05 }}
@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">mug.myy</h1>
             </motion.div>
 
-          {/* Mobile hamburger */}
+            {/* Mobile hamburger */}
             <div className="md:hidden flex items-center gap-2">
               <DarkModeToggle />
               <button
@@ -117,51 +117,51 @@ const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-          {/* User Actions (desktop) */}
+            {/* User Actions (desktop) */}
             <div className="hidden md:flex items-center space-x-3 rtl:space-x-reverse">
               <LanguageSwitcher />
               <CurrencySwitcher />
               <DarkModeToggle />
               
-            {isAuthenticated && user ? (
+              {isAuthenticated && user ? (
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                <button
-                  onClick={onDashboardToggle}
+                  <button
+                    onClick={onDashboardToggle}
                     className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                >
-                  <User className="h-5 w-5" />
-                  <span className="font-medium">{user.name}</span>
-                </button>
-                <button
-                  onClick={onLogout}
+                  >
+                    <User className="h-5 w-5" />
+                    <span className="font-medium">{user.name}</span>
+                  </button>
+                  <button
+                    onClick={onLogout}
                     className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors duration-200 flex items-center space-x-1 rtl:space-x-reverse p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                     aria-label={t('nav.logout')}
-                >
-                  <LogOut className="h-4 w-4" />
+                  >
+                    <LogOut className="h-4 w-4" />
                     <span>{t('nav.logout')}</span>
-                </button>
+                  </button>
                 </div>
-            ) : (
-              <button
-                onClick={onLoginToggle}
+              ) : (
+                <button
+                  onClick={onLoginToggle}
                   className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center space-x-2 rtl:space-x-reverse focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-              >
-                <User className="h-5 w-5" />
+                >
+                  <User className="h-5 w-5" />
                   <span>{t('nav.login')}</span>
-              </button>
-            )}
+                </button>
+              )}
 
-            {/* Cart Button */}
+              {/* Cart Button */}
               <motion.button
-              onClick={onCartToggle}
+                onClick={onCartToggle}
                 className="relative bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors duration-200 flex items-center space-x-2 rtl:space-x-reverse focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label={`${t('nav.cart')} (${cartItemCount})`}
-            >
-              <ShoppingCart className="h-5 w-5" />
+              >
+                <ShoppingCart className="h-5 w-5" />
                 <span>{t('nav.cart')}</span>
-              {cartItemCount > 0 && (
+                {cartItemCount > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -169,13 +169,13 @@ const Header: React.FC<HeaderProps> = ({
                   >
                     {cartItemCount}
                   </motion.span>
-              )}
+                )}
               </motion.button>
             </div>
           </div>
         </div>
 
-      {/* Mobile slide-out panel */}
+        {/* Mobile slide-out panel */}
         <AnimatePresence>
           {mobileOpen && (
             <div className="md:hidden fixed inset-0 z-40">
@@ -213,49 +213,48 @@ const Header: React.FC<HeaderProps> = ({
                   <CurrencySwitcher />
                 </div>
 
-          {isAuthenticated && user ? (
+                {isAuthenticated && user ? (
                   <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-              <button
-                onClick={() => { onDashboardToggle(); closeMobile(); }}
+                    <button
+                      onClick={() => { onDashboardToggle(); closeMobile(); }}
                       className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-              >
-                <User className="h-5 w-5" />
-                <span className="font-medium">{user.name}</span>
-              </button>
+                    >
+                      <User className="h-5 w-5" />
+                      <span className="font-medium">{user.name}</span>
+                    </button>
                     <button 
                       onClick={() => { onLogout(); closeMobile(); }} 
                       className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 flex items-center gap-1"
                     >
                       <LogOut className="h-4 w-4" /> {t('nav.logout')}
-              </button>
+                    </button>
                   </div>
-          ) : (
+                ) : (
                   <button 
                     onClick={() => { onLoginToggle(); closeMobile(); }} 
                     className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center gap-2 justify-center"
                   >
                     <User className="h-5 w-5" /> {t('nav.login')}
-            </button>
-          )}
+                  </button>
+                )}
 
-          <button
-            onClick={() => { onCartToggle(); closeMobile(); }}
+                <button
+                  onClick={() => { onCartToggle(); closeMobile(); }}
                   className="relative bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 flex items-center justify-center gap-2"
-          >
-                    <ShoppingCart className="h-5 w-5" /> {t('nav.cart')}
-            {cartItemCount > 0 && (
-                      <span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
-                        {cartItemCount}
-              </span>
-            )}
-          </button>
+                >
+                  <ShoppingCart className="h-5 w-5" /> {t('nav.cart')}
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-2 -left-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </button>
               </motion.div>
             </div>
           )}
         </AnimatePresence>
       </header>
     </>
-    </header>
   );
 };
 
