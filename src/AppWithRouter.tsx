@@ -8,6 +8,7 @@ import { ToastProvider } from './context/ToastContext';
 import { UserProvider, useUser } from './context/UserContext';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import HeroSlider from './components/HeroSlider';
 import ProductCard from './components/ProductCard';
 import ProductModal from './components/ProductModal';
 import CategoryFilter from './components/CategoryFilter';
@@ -330,7 +331,7 @@ function HomePage() {
         categories={categories}
       />
 
-      <Hero />
+      <HeroSlider />
 
       <main id="products" className="py-8 sm:py-12">
         <ResponsiveContainer maxWidth="3xl" padding="lg">
