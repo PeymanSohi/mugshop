@@ -14,6 +14,7 @@ import CategoryFilter from './components/CategoryFilter';
 import AdvancedFilters from './components/AdvancedFilters';
 import Pagination from './components/Pagination';
 import Cart from './components/Cart';
+import CheckoutModal from './components/CheckoutModal';
 import MiniCart from './components/MiniCart';
 import LoginModal from './components/LoginModal';
 import RegisterModal from './components/RegisterModal';
@@ -38,6 +39,7 @@ function HomePage() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   // URL state management
   const { urlState, updateUrl } = useUrlState();
@@ -271,6 +273,16 @@ function HomePage() {
     }
   };
 
+  const handleCheckout = () => {
+    if (isAuthenticated) {
+      setIsCartOpen(false);
+      setIsCheckoutOpen(true);
+    } else {
+      setIsCartOpen(false);
+      setIsLoginOpen(true);
+    }
+  };
+
   const handleSortChange = (sort: SortOption) => {
     setSortOption(sort);
     setCurrentPage(1); // Reset to first page when sorting changes
@@ -491,6 +503,7 @@ function HomePage() {
         onRemoveItem={removeFromCart}
         user={user}
         onLoginToggle={() => setIsLoginOpen(true)}
+        onCheckout={handleCheckout}
         onAddToCart={addToCart}
         onToggleWishlist={toggleWishlist}
         isInWishlist={isInWishlist}
@@ -542,6 +555,12 @@ function HomePage() {
         onAddAddress={addAddress}
         onUpdateAddress={updateAddress}
         onDeleteAddress={deleteAddress}
+      />
+
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        cart={cart}
       />
     </div>
   );

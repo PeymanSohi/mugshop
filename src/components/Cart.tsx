@@ -12,6 +12,7 @@ interface CartProps {
   onRemoveItem: (productId: string) => void;
   user: User | null;
   onLoginToggle: () => void;
+  onCheckout?: () => void;
   onAddToCart?: (product: Product) => void;
   onToggleWishlist?: (product: Product) => void;
   isInWishlist?: (productId: string) => boolean;
@@ -27,6 +28,7 @@ const Cart: React.FC<CartProps> = ({
   onRemoveItem, 
   user, 
   onLoginToggle,
+  onCheckout,
   onAddToCart,
   onToggleWishlist,
   isInWishlist,
@@ -237,7 +239,10 @@ const Cart: React.FC<CartProps> = ({
             </div>
             
             {user ? (
-              <button className="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200">
+              <button
+                onClick={() => onCheckout && onCheckout()}
+                className="w-full bg-primary-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-primary-700 transition-colors duration-200"
+              >
                 ادامه فرایند خرید
               </button>
             ) : (
