@@ -58,24 +58,7 @@ const HeroSlider: React.FC = () => {
                 />
               ))}
 
-              {images.length > 1 && (
-                <>
-                  <button
-                    onClick={goPrev}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-700 rounded-full px-3 py-1"
-                    aria-label="تصویر قبلی"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    onClick={goNext}
-                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-700 rounded-full px-3 py-1"
-                    aria-label="تصویر بعدی"
-                  >
-                    ›
-                  </button>
-                </>
-              )}
+              
 
               {images.length > 1 && (
                 <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-2">
