@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
             <div className="space-y-3 text-gray-300 text-sm sm:text-base">
               <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
                 <Mail className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                <span className="break-all">hello@mug.myy</span>
+                <a href="mailto:mutmakian@gmail.com" className="break-all">mutmakian@gmail.com</a>
               </div>
               <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
                 <Phone className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 hover:text-primary-400 transition-colors">
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                <span>پورتلند، اورِگون</span>
+                <span>تهران، ایران</span>
               </div>
             </div>
           </div>

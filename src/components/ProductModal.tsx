@@ -3,6 +3,18 @@ import { Product } from '../types';
 import { usePinchZoom } from '../hooks/usePinchZoom';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 import { formatPersianPrice, toPersianNumbers } from '../utils/persianNumbers';
+// Map Persian color names to hex codes for swatch display
+function mapColorToHex(name: string): string {
+  const map: Record<string, string> = {
+    'سفید': '#ffffff',
+    'مشکی': '#000000',
+    'طوسی': '#9ca3af',
+    'آبی': '#3b82f6',
+    'سبز': '#10b981',
+    'شفاف': '#e5e7eb'
+  };
+  return map[name] || '#e5e7eb';
+}
 
 interface ProductModalProps {
   isOpen: boolean;
@@ -28,6 +40,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
   const [currentIndex, setCurrentIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string | null>(() => product.colors?.[0] || null);
   const [addedToCart, setAddedToCart] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const { zoomState, setupPinchZoom, resetZoom } = usePinchZoom();
@@ -41,11 +54,11 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
     
     setIsAddingToCart(true);
     try {
-      if (onAddToCartWithQuantity) {
-        await onAddToCartWithQuantity(product, quantity);
-      } else {
-        await onAddToCart(product);
-      }
+      const productWithColor = selectedColor
+        ? { ...product, name: `${product.name} - ${selectedColor}` }
+        : product;
+      if (onAddToCartWithQuantity) await onAddToCartWithQuantity(productWithColor, quantity);
+      else await onAddToCart(productWithColor);
       setAddedToCart(true);
       setTimeout(() => setAddedToCart(false), 2000);
     } catch (error) {
@@ -252,6 +265,28 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
               <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{product.description}</p>
             </div>
 
+            {/* Color Selector (if available) - moved above price section */}
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">رنگ</h4>
+                <div className="flex flex-wrap gap-2">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setSelectedColor(color)}
+                      className={`w-8 h-8 rounded-full border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 ${
+                        selectedColor === color ? 'ring-2 ring-amber-500 border-amber-600' : 'border-gray-300 dark:border-gray-600'
+                      }`}
+                      title={color}
+                      aria-label={`انتخاب رنگ ${color}`}
+                      style={{ backgroundColor: mapColorToHex(color) }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Specifications */}
             <div>
               <h4 className="text-base font-semibold text-gray-900 dark:text-white mb-2">مشخصات فنی</h4>
@@ -326,15 +361,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
                   </button>
                   <input
                     id="quantity-input"
-                    type="number"
-                    min={1}
-                    max={99}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9۰-۹]*"
                     value={toPersianNumbers(quantity.toString())}
                     onChange={(e) => {
                       const englishValue = e.target.value.replace(/[۰-۹]/g, (digit) => {
                         const index = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'].indexOf(digit);
                         return index !== -1 ? index.toString() : digit;
-                      });
+                      }).replace(/[^0-9]/g, '');
                       setQuantity(Math.max(1, Math.min(99, Number(englishValue) || 1)));
                     }}
                     className="w-12 text-center outline-none py-2 bg-transparent text-gray-900 dark:text-white font-medium focus:bg-gray-50 dark:focus:bg-gray-600"
@@ -423,6 +458,30 @@ const ProductModal: React.FC<ProductModalProps> = ({ isOpen, product, onClose, o
               </div>
             </div>
           </div>
+
+          {/* Color Selector (if available) */}
+          {product.colors && product.colors.length > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">رنگ</h4>
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setSelectedColor(color)}
+                    className={`px-3 py-1.5 rounded-full border text-sm transition-colors ${
+                      selectedColor === color
+                        ? 'border-amber-600 bg-amber-50 text-amber-700 dark:border-amber-400 dark:bg-amber-900/20 dark:text-amber-200'
+                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                    aria-pressed={selectedColor === color}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
       </div>

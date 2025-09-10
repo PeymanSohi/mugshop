@@ -18,21 +18,21 @@ const SiteComments: React.FC<SiteCommentsProps> = ({ initialComments = [] }) => 
   const defaultComments: CommentItem[] = [
     {
       id: 's1',
-      name: 'رضا محمدی',
+      name: 'مریم زمانی',
       rating: 5,
       message: 'ارسال سریع بود و بسته‌بندی خیلی تمیز. کیفیت ماگ‌ها عالیه، حتماً دوباره خرید می‌کنم.',
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2)
     },
     {
       id: 's2',
-      name: 'نگار کریمی',
+      name: 'حدیث نادری',
       rating: 4,
       message: 'طرح‌ها خیلی خاص و قشنگن. فقط ای کاش تنوع رنگ‌ها بیشتر باشه.',
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
     },
     {
       id: 's3',
-      name: 'حمید رضاپور',
+      name: 'پیمان سهی',
       rating: 5,
       message: 'برای هدیه خریدم، خیلی خوششون اومد. قیمت نسبت به کیفیت کاملاً مناسبه.',
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 8)
@@ -53,7 +53,7 @@ const SiteComments: React.FC<SiteCommentsProps> = ({ initialComments = [] }) => 
     return defaultComments;
   });
   const [name, setName] = useState('');
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(4);
   const [message, setMessage] = useState('');
 
   const averageRating = useMemo(() => {
@@ -105,18 +105,26 @@ const SiteComments: React.FC<SiteCommentsProps> = ({ initialComments = [] }) => 
               placeholder="نام شما"
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
             />
-            <select
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            >
-              {[5,4,3,2,1].map(r => {
-                const stars = '⭐️'.repeat(r);
+            <div className="flex items-center gap-1 sm:gap-2">
+              {Array.from({ length: 5 }).map((_, idx) => {
+                const value = idx + 1;
+                const isActive = value <= rating;
                 return (
-                  <option key={r} value={r}>{stars} ({toPersianNumbers(r.toString())})</option>
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setRating(value)}
+                    className={`p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 ${isActive ? 'text-yellow-500' : 'text-gray-300 dark:text-gray-500'}`}
+                    aria-label={`امتیاز ${value}`}
+                  >
+                    <Star className={`h-6 w-6 ${isActive ? 'fill-current' : ''}`} />
+                  </button>
                 );
               })}
-            </select>
+              <span className="text-xs text-gray-500 mr-2">
+                {toPersianNumbers(rating.toString())} / ۵
+              </span>
+            </div>
             <button
               type="submit"
               className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"

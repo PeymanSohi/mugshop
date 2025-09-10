@@ -92,20 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </motion.div>
         )}
         
-        {/* Rating Badge */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white dark:bg-gray-700 rounded-full p-1.5 sm:p-2 shadow-md"
-        >
-          <div className="flex items-center gap-1">
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current" />
-            <span className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
-              {(product.averageRating?.toFixed(1) || '4.8')}
-            </span>
-          </div>
-        </motion.div>
+        
         
         {/* Wishlist Button */}
         {onToggleWishlist && (

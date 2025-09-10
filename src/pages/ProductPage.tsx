@@ -168,22 +168,7 @@ const ProductPage: React.FC = () => {
               
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
               
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: 5 }, (_, index) => (
-                    <Star
-                      key={index}
-                      className={`h-5 w-5 ${
-                        index < Math.round(product.averageRating || 4.5)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-lg font-semibold">{product.averageRating?.toFixed(1) || '4.5'}</span>
-                <span className="text-gray-600">({product.reviewCount || 0} نظر)</span>
-              </div>
+              
             </div>
 
             <div className="text-3xl font-bold text-amber-700">
@@ -278,16 +263,7 @@ const ProductPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        {product.reviews && product.reviews.length > 0 && (
-          <div className="mt-16">
-            <Reviews
-              reviews={product.reviews}
-              averageRating={product.averageRating || 0}
-              reviewCount={product.reviewCount || 0}
-            />
-          </div>
-        )}
+        
       </div>
     </div>
   );

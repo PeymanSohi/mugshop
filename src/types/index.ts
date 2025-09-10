@@ -16,6 +16,7 @@ export interface Product {
   description: string;
   category: string;
   inStock: boolean;
+  colors?: string[]; // Optional list of available color names (fa)
   createdAt?: Date;
   popularity?: number;
   salePrice?: number;

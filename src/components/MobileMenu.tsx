@@ -117,8 +117,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         {/* Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
           <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-            <p>mug.myy © ۲۰۲۵</p>
-            <p>ساخته شده با ❤️ در ایران</p>
+            <p>mug.myy © ۲۰۲۵ • تهران، ایران</p>
+            <p>
+              <a href="https://www.instagram.com/mug.myy" target="_blank" rel="noopener noreferrer" className="hover:underline">@mug.myy</a>
+            </p>
           </div>
         </div>
       </div>
