@@ -15,6 +15,30 @@ interface SiteCommentsProps {
 }
 
 const SiteComments: React.FC<SiteCommentsProps> = ({ initialComments = [] }) => {
+  const defaultComments: CommentItem[] = [
+    {
+      id: 's1',
+      name: 'رضا محمدی',
+      rating: 5,
+      message: 'ارسال سریع بود و بسته‌بندی خیلی تمیز. کیفیت ماگ‌ها عالیه، حتماً دوباره خرید می‌کنم.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2)
+    },
+    {
+      id: 's2',
+      name: 'نگار کریمی',
+      rating: 4,
+      message: 'طرح‌ها خیلی خاص و قشنگن. فقط ای کاش تنوع رنگ‌ها بیشتر باشه.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5)
+    },
+    {
+      id: 's3',
+      name: 'حمید رضاپور',
+      rating: 5,
+      message: 'برای هدیه خریدم، خیلی خوششون اومد. قیمت نسبت به کیفیت کاملاً مناسبه.',
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 8)
+    }
+  ];
+
   const [comments, setComments] = useState<CommentItem[]>(() => {
     const stored = localStorage.getItem('siteComments');
     if (stored) {
@@ -23,7 +47,10 @@ const SiteComments: React.FC<SiteCommentsProps> = ({ initialComments = [] }) => 
         return parsed.map(c => ({ ...c, createdAt: new Date(c.createdAt) }));
       } catch (_) {}
     }
-    return initialComments;
+    if (initialComments && initialComments.length > 0) {
+      return initialComments;
+    }
+    return defaultComments;
   });
   const [name, setName] = useState('');
   const [rating, setRating] = useState(5);
