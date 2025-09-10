@@ -4,10 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { User as UserType, Product } from '../types';
 import DarkModeToggle from './DarkModeToggle';
-import LanguageSwitcher from './LanguageSwitcher';
-import CurrencySwitcher from './CurrencySwitcher';
 import SkipToContent from './SkipToContent';
-import { useCurrency, formatPrice } from '../hooks/useCurrency';
+ 
 
 interface HeaderProps {
   cartItemCount: number;
@@ -33,7 +31,6 @@ const Header: React.FC<HeaderProps> = ({
   onLogout
 }) => {
   const { t } = useTranslation();
-  const [{ currency, rates }] = useCurrency();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   
@@ -119,8 +116,6 @@ const Header: React.FC<HeaderProps> = ({
 
             {/* User Actions (desktop) */}
             <div className="hidden md:flex items-center space-x-3 rtl:space-x-reverse">
-              <LanguageSwitcher />
-              <CurrencySwitcher />
               <DarkModeToggle />
               
               {isAuthenticated && user ? (
@@ -208,9 +203,8 @@ const Header: React.FC<HeaderProps> = ({
                 </div>
 
                 {/* Mobile Controls */}
-                <div className="flex items-center justify-between">
-                  <LanguageSwitcher />
-                  <CurrencySwitcher />
+                <div className="flex items-center justify-end">
+                  <DarkModeToggle />
                 </div>
 
                 {isAuthenticated && user ? (

@@ -30,6 +30,8 @@ const resources = {
       'products.addToCart': 'افزودن به سبد',
       'products.adding': 'در حال افزودن...',
       'products.outOfStock': 'ناموجود',
+      'products.sale': 'تخفیف',
+      'products.stockLow': 'فقط {{count}} عدد باقی‌مانده',
       'products.freeShipping': 'ارسال رایگان',
       'products.noResults': 'محصولی مطابق فیلترها یافت نشد.',
       'products.clearFilters': 'پاک کردن فیلترها',

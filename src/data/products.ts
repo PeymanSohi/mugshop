@@ -164,6 +164,19 @@ const mockReviews: Review[] = [
   }
 ];
 
+// Available mug images pool (add here if you upload more)
+const mugImagesPool: string[] = [
+  '/mugs/image.jpeg',
+  '/mugs/image-3.jpeg',
+  '/mugs/image-5.jpeg'
+];
+
+function getRandomImages(minCount: number = 2, maxCount: number = 4): string[] {
+  const count = Math.max(minCount, Math.min(maxCount, Math.floor(Math.random() * (maxCount - minCount + 1)) + minCount));
+  const shuffled = [...mugImagesPool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(count, mugImagesPool.length));
+}
+
 export const products: Product[] = [
   {
     id: '1',
@@ -498,10 +511,13 @@ export const products: Product[] = [
   }
 ];
 
-// Ensure all products have a full image set for the slider
-products.forEach((product) => {
-  if (!product.images || product.images.length < 2) {
-    product.images = ['/mugs/image.jpeg', '/mugs/image-2.jpeg', '/mugs/image-3.jpeg'];
+// Randomize images per product and update main image for variety
+products.forEach((product, idx) => {
+  const images = getRandomImages(2, 4);
+  product.images = images;
+  // Change main image for some products to increase variety
+  if (idx % 2 === 0) {
+    product.image = images[0];
   }
 });
 

@@ -28,6 +28,7 @@ import { Product, SortOption, PaginationState, FilterState } from './types';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import AnimatedBackground from './components/AnimatedBackground';
 import FilterChips from './components/FilterChips';
+import SiteComments from './components/SiteComments';
 
 function HomePage() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ function HomePage() {
   const [searchTerm, setSearchTerm] = useState(urlState.search || '');
   const [sortOption, setSortOption] = useState<SortOption>((urlState.sort as SortOption) || 'popularity');
   const [currentPage, setCurrentPage] = useState(parseInt(urlState.page || '1'));
-  const itemsPerPage = 12;
+  const itemsPerPage = 9;
   
   // Advanced filters state
   // Calculate actual price range from products
@@ -474,6 +475,9 @@ function HomePage() {
           pagination={pagination}
           onPageChange={handlePageChange}
         />
+
+        {/* Global site comments under the product list */}
+        <SiteComments />
 
         {filteredProducts.length === 0 && (
           <div className="text-center py-8 sm:py-12">

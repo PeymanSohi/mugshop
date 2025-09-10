@@ -88,3 +88,4 @@ const LanguageSwitcher: React.FC = () => {
 };
 
 export default LanguageSwitcher;
+// Disabled component (single-language app). Consider removing from Header.
