@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 
-export type Currency = 'IRR' | 'USD' | 'EUR';
+export type Currency = 'IRR';
 
 interface ExchangeRates {
   IRR: number;
-  USD: number;
-  EUR: number;
 }
 
 interface CurrencyData {
@@ -17,9 +15,7 @@ interface CurrencyData {
 
 // Mock exchange rates - in production, use a real API like exchangerate-api.com
 const mockRates: ExchangeRates = {
-  IRR: 1,
-  USD: 0.000024, // 1 IRR = 0.000024 USD (approximate)
-  EUR: 0.000022  // 1 IRR = 0.000022 EUR (approximate)
+  IRR: 1
 };
 
 export function useCurrency(): [CurrencyData, (currency: Currency) => void] {
@@ -63,8 +59,8 @@ export function useCurrency(): [CurrencyData, (currency: Currency) => void] {
   }, []);
 
   const updateCurrency = (newCurrency: Currency) => {
-    setCurrency(newCurrency);
-    localStorage.setItem('currency', newCurrency);
+    setCurrency('IRR');
+    localStorage.setItem('currency', 'IRR');
   };
 
   return [
@@ -74,16 +70,6 @@ export function useCurrency(): [CurrencyData, (currency: Currency) => void] {
 }
 
 export function formatPrice(price: number, currency: Currency, rates: ExchangeRates): string {
-  const convertedPrice = price * rates[currency];
-  
-  switch (currency) {
-    case 'IRR':
-      return `${convertedPrice.toLocaleString('fa-IR')} تومان`;
-    case 'USD':
-      return `$${convertedPrice.toFixed(2)}`;
-    case 'EUR':
-      return `€${convertedPrice.toFixed(2)}`;
-    default:
-      return `${convertedPrice.toLocaleString()} ${currency}`;
-  }
+  const convertedPrice = price * rates.IRR;
+  return `${convertedPrice.toLocaleString('fa-IR')} تومان`;
 }
