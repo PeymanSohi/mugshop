@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 const languages = [
   { code: 'fa', name: 'فارسی', flag: '🇮🇷' },
-  { code: 'en', name: 'English', flag: '🇺🇸' }
+  
 ];
 
 const LanguageSwitcher: React.FC = () => {

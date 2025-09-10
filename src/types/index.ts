@@ -51,8 +51,8 @@ export interface User {
 }
 
 export interface UserPreferences {
-  language: 'fa' | 'en';
-  currency: 'IRR' | 'USD';
+  language: 'fa';
+  currency: 'IRR';
   notifications: {
     email: boolean;
     sms: boolean;

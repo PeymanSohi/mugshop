@@ -607,7 +607,7 @@ const PreferencesForm: React.FC<{
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
         >
           <option value="fa">فارسی</option>
-          <option value="en">English</option>
+          
         </select>
       </div>
 
@@ -619,7 +619,7 @@ const PreferencesForm: React.FC<{
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
         >
           <option value="IRR">تومان</option>
-          <option value="USD">دلار</option>
+          
         </select>
       </div>
 
