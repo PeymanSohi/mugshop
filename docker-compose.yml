@@ -8,3 +8,39 @@ services:
         BASIC_AUTH_PASS: ${ADMIN_BASIC_PASS:-admin}
     ports:
       - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - appnet
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-mugshop}
+      - NODE_ENV=production
+    depends_on:
+      - db
+    volumes:
+      - uploads:/app/uploads
+    networks:
+      - appnet
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-mugshop}
+      - POSTGRES_USER=postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  db_data:
+  uploads:

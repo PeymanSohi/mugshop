@@ -40,7 +40,8 @@ import Footer from './components/Footer';
 import ProductPage from './pages/ProductPage';
 import ResponsiveContainer from './components/ResponsiveContainer';
 import ResponsiveGrid from './components/ResponsiveGrid';
-import { products, categories } from './data/products';
+import { categories } from './data/products';
+import { useApiProducts } from './hooks/useApiProducts';
 import { Product, SortOption, PaginationState, FilterState } from './types';
 import { Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import AnimatedBackground from './components/AnimatedBackground';
@@ -69,6 +70,8 @@ function HomePage() {
   
   // Advanced filters state
   // Calculate actual price range from products
+  const { products: apiProducts, loading: productsLoading } = useApiProducts();
+  const products = apiProducts.length ? apiProducts : [];
   const priceRange = useMemo(() => {
     const prices = products.map(p => p.salePrice || p.price);
     return [Math.min(...prices), Math.max(...prices)] as [number, number];
@@ -483,7 +486,7 @@ function HomePage() {
               onToggleWishlist={toggleWishlist}
               isInWishlist={isInWishlist(product.id)}
               searchTerm={debouncedSearchTerm}
-              isLoading={isLoading}
+              isLoading={isLoading || productsLoading}
             />
           ))}
         </ResponsiveGrid>
