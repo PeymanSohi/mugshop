@@ -21,11 +21,13 @@ services:
       retries: 5
 
   strapi:
-    image: strapi/strapi:latest
+    image: node:20-alpine
+    working_dir: /srv/app
     env_file:
       - .env.strapi
     environment:
       NODE_ENV: development
+      STRAPI_TELEMETRY_DISABLED: "true"
       DATABASE_CLIENT: ${DATABASE_CLIENT:-postgres}
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
@@ -35,6 +37,8 @@ services:
       DATABASE_SSL: "false"
     volumes:
       - ./strapi:/srv/app
+    command: >
+      sh -lc "npm install && npm run develop"
     ports:
       - "1337:1337"
     depends_on:
