@@ -22,7 +22,6 @@ services:
 
   strapi:
     image: strapi/strapi:latest
-    platform: linux/arm64/v8
     env_file:
       - .env.strapi
     environment:
