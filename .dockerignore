@@ -11,4 +11,3 @@ pnpm-debug.log*
 build
 coverage
 .eslintcache
-.env*

@@ -3,5 +3,8 @@ services:
     build:
       context: .
       target: prod
+      args:
+        BASIC_AUTH_USER: ${ADMIN_BASIC_USER:-admin}
+        BASIC_AUTH_PASS: ${ADMIN_BASIC_PASS:-admin}
     ports:
       - "8080:80"

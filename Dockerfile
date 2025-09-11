@@ -32,5 +32,11 @@ FROM nginx:alpine AS prod
 COPY --from=build /app/dist /usr/share/nginx/html
 # Add SPA fallback config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Create basic auth user file; set via build args or defaults
+ARG BASIC_AUTH_USER=admin
+ARG BASIC_AUTH_PASS=ChangeMe_Admin_123
+RUN apk add --no-cache apache2-utils \
+  && htpasswd -b -c /etc/nginx/.htpasswd "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS"
 # Nginx listens on 80 by default
 EXPOSE 80
