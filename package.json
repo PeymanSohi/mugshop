@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "directus:schema:export": "bash ./scripts/directus-export-schema.sh",
+    "directus:schema:apply": "bash ./scripts/directus-apply-schema.sh"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
