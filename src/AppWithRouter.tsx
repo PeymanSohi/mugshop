@@ -1,21 +1,11 @@
 import { useState, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminLogin from './pages/AdminLogin';
-import { getAdminPrefix } from './utils/adminPrefix';
-import ProtectedRoute from './components/ProtectedRoute';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminLayout from './layouts/AdminLayout';
-import AdminHome from './pages/admin';
-import ProductsPage from './pages/admin/Products';
-import OrdersPage from './pages/admin/Orders';
-import CustomersPage from './pages/admin/Customers';
-import ReviewsPage from './pages/admin/Reviews';
-import DiscountsPage from './pages/admin/Discounts';
-import SettingsPage from './pages/admin/Settings';
-import MediaPage from './pages/admin/Media';
-import AnalyticsPage from './pages/admin/Analytics';
-import SEOPage from './pages/admin/SEO';
-import PagesPage from './pages/admin/Pages';
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminProducts from './pages/admin/AdminProducts';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminOrders from './pages/admin/AdminOrders';
 import { useTranslation } from 'react-i18next';
 import { useDebounce } from './hooks/useDebounce';
 import { useUrlState } from './hooks/useUrlState';
@@ -591,7 +581,6 @@ function HomePage() {
 }
 
 function App() {
-  const adminBase = getAdminPrefix();
   return (
     <ToastProvider>
       <UserProvider>
@@ -600,26 +589,15 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/product/:id" element={<ProductPage />} />
-              <Route path={`${adminBase}`} element={<AdminLogin />} />
+              <Route path="/X9fL2qRv8tZw" element={<AdminLogin />} />
               <Route
-                path={`${adminBase}/dashboard`}
-                element={
-                  <ProtectedRoute>
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
+                path="/X9fL2qRv8tZw/*"
+                element={<AdminLayout />}
               >
-                <Route index element={<AdminHome />} />
-                <Route path="products" element={<ProductsPage />} />
-                <Route path="orders" element={<OrdersPage />} />
-                <Route path="customers" element={<CustomersPage />} />
-                <Route path="reviews" element={<ReviewsPage />} />
-                <Route path="discounts" element={<DiscountsPage />} />
-                <Route path="media" element={<MediaPage />} />
-                <Route path="analytics" element={<AnalyticsPage />} />
-                <Route path="seo" element={<SEOPage />} />
-                <Route path="pages" element={<PagesPage />} />
-                <Route path="settings" element={<SettingsPage />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="orders" element={<AdminOrders />} />
               </Route>
             </Routes>
           </Router>
