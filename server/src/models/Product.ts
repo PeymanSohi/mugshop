@@ -29,12 +29,18 @@ const productSchema = new Schema<IProduct>({
 
 // Generate slug from name
 productSchema.pre('save', function(next) {
-  if (this.isModified('name')) {
+  if (this.isModified('name') && !this.slug) {
+    // For Persian names, create a simple slug
     this.slug = this.name
-      .toLowerCase()
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replace(/^-+|-+$/g, '')
+      .toLowerCase();
+    
+    // If slug is empty after processing Persian characters, use a fallback
+    if (!this.slug) {
+      this.slug = `product-${this._id}`;
+    }
   }
   next();
 });

@@ -1,4 +1,5 @@
 import { Document } from 'mongoose';
+import { Request } from 'express';
 
 export interface IUser extends Document {
   _id: string;
@@ -12,9 +13,16 @@ export interface IUser extends Document {
   gender?: 'male' | 'female' | 'other';
   isActive: boolean;
   lastLogin?: Date;
+  lastLoginIP?: string;
+  failedLoginAttempts?: number;
+  lockedUntil?: Date;
   createdAt: Date;
   updatedAt: Date;
   addresses?: IAddress[];
+  comparePassword(candidatePassword: string): Promise<boolean>;
+  incLoginAttempts(): Promise<any>;
+  resetLoginAttempts(): Promise<any>;
+  isLocked: boolean;
 }
 
 export interface IAddress {

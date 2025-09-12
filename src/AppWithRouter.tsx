@@ -69,7 +69,7 @@ function HomePage() {
 
   const [filters, setFilters] = useState<FilterState>({
     categories: [],
-    priceRange: priceRange,
+    priceRange: [0, 999999], // Set very high max to not filter by default
     minRating: 0,
     inStock: false,
     onSale: false,
@@ -81,10 +81,9 @@ function HomePage() {
   const [isProductOpen, setIsProductOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
 
-  // Check if there are active filters
+  // Check if there are active filters (excluding default values)
   const hasActiveFilters = filters.categories.length > 0 || 
-                          filters.priceRange[0] > priceRange[0] || 
-                          filters.priceRange[1] < priceRange[1] || 
+                          (filters.priceRange[0] > 0 || filters.priceRange[1] < 999999) || 
                           filters.minRating > 0 ||
                           filters.inStock ||
                           filters.onSale;
@@ -105,10 +104,11 @@ function HomePage() {
       const matchesAdvancedCategory = filters.categories.length === 0 || 
                                      filters.categories.includes(product.category);
       
-      // Price range filter
+      // Price range filter - only apply if user has set a custom range
       const productPrice = product.salePrice || product.price;
-      const matchesPriceRange = productPrice >= filters.priceRange[0] && 
-                               productPrice <= filters.priceRange[1];
+      const isDefaultPriceRange = filters.priceRange[0] === 0 && filters.priceRange[1] === 999999;
+      const matchesPriceRange = isDefaultPriceRange || 
+                               (productPrice >= filters.priceRange[0] && productPrice <= filters.priceRange[1]);
       
       // Rating filter
       const matchesRating = filters.minRating === 0 || (product.averageRating || 0) >= filters.minRating;

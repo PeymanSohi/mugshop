@@ -21,21 +21,19 @@ const seedData = async () => {
     console.log('🗑️  Cleared existing data');
 
     // Create admin user
-    const adminPassword = await bcrypt.hash('admin123', 12);
     const adminUser = await User.create({
       name: 'مدیر سیستم',
       email: 'admin@mugshop.com',
-      password: adminPassword,
+      password: 'admin123', // Will be hashed by pre-save hook
       role: 'admin',
       phone: '09123456789'
     });
 
     // Create staff user
-    const staffPassword = await bcrypt.hash('staff123', 12);
     const staffUser = await User.create({
       name: 'کارمند فروشگاه',
       email: 'staff@mugshop.com',
-      password: staffPassword,
+      password: 'staff123', // Will be hashed by pre-save hook
       role: 'staff',
       phone: '09123456788'
     });
@@ -44,11 +42,11 @@ const seedData = async () => {
 
     // Create categories
     const categories = await Category.create([
-      { name: 'کلاسیک', sortOrder: 1 },
-      { name: 'مدرن', sortOrder: 2 },
-      { name: 'روستیک', sortOrder: 3 },
-      { name: 'وینتیج', sortOrder: 4 },
-      { name: 'ست‌ها', sortOrder: 5 }
+      { name: 'کلاسیک', slug: 'classic', sortOrder: 1 },
+      { name: 'مدرن', slug: 'modern', sortOrder: 2 },
+      { name: 'روستیک', slug: 'rustic', sortOrder: 3 },
+      { name: 'وینتیج', slug: 'vintage', sortOrder: 4 },
+      { name: 'ست‌ها', slug: 'sets', sortOrder: 5 }
     ]);
 
     console.log('📂 Created categories');
@@ -120,11 +118,10 @@ const seedData = async () => {
     console.log('🏺 Created sample products');
 
     // Create sample customer
-    const customerPassword = await bcrypt.hash('customer123', 12);
     const customer = await User.create({
       name: 'مشتری نمونه',
       email: 'customer@example.com',
-      password: customerPassword,
+      password: 'customer123', // Will be hashed by pre-save hook
       role: 'customer',
       phone: '09123456787',
       addresses: [{
@@ -143,6 +140,7 @@ const seedData = async () => {
     // Create sample orders
     await Order.create([
       {
+        orderNumber: `MUG${Date.now()}001`,
         userId: customer._id.toString(),
         items: [
           {
@@ -163,6 +161,7 @@ const seedData = async () => {
         trackingNumber: 'TRK123456789'
       },
       {
+        orderNumber: `MUG${Date.now()}002`,
         userId: customer._id.toString(),
         items: [
           {

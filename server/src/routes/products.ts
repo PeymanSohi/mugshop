@@ -9,6 +9,7 @@ import {
 } from '../controllers/productController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import { validateProduct } from '../middleware/validation.js';
+import { auditLogger } from '../middleware/audit.js';
 
 const router = express.Router();
 
@@ -16,10 +17,10 @@ const router = express.Router();
 router.get('/', getProducts);
 router.get('/:id', getProduct);
 
-// Protected routes
-router.post('/', authenticate, authorize('admin', 'staff'), validateProduct, createProduct);
-router.put('/:id', authenticate, authorize('admin', 'staff'), validateProduct, updateProduct);
-router.delete('/:id', authenticate, authorize('admin'), deleteProduct);
-router.patch('/:id/toggle-status', authenticate, authorize('admin', 'staff'), toggleProductStatus);
+// Protected routes with audit logging
+router.post('/', authenticate, authorize('admin', 'staff'), auditLogger('CREATE', 'PRODUCT'), validateProduct, createProduct);
+router.put('/:id', authenticate, authorize('admin', 'staff'), auditLogger('UPDATE', 'PRODUCT'), validateProduct, updateProduct);
+router.delete('/:id', authenticate, authorize('admin'), auditLogger('DELETE', 'PRODUCT'), deleteProduct);
+router.patch('/:id/toggle-status', authenticate, authorize('admin', 'staff'), auditLogger('TOGGLE_STATUS', 'PRODUCT'), toggleProductStatus);
 
 export default router;

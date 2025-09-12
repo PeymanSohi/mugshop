@@ -14,8 +14,17 @@ const categorySchema = new Schema<ICategory>({
 
 // Generate slug from name
 categorySchema.pre('save', function(next) {
-  if (this.isModified('name')) {
-    this.slug = this.name
+  if (this.isModified('name') && !this.slug) {
+    // For Persian names, use a simple transliteration or fallback
+    const persianToEnglish: { [key: string]: string } = {
+      'کلاسیک': 'classic',
+      'مدرن': 'modern', 
+      'روستیک': 'rustic',
+      'وینتیج': 'vintage',
+      'ست‌ها': 'sets'
+    };
+    
+    this.slug = persianToEnglish[this.name] || this.name
       .toLowerCase()
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')

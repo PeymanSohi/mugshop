@@ -9,33 +9,48 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     networks:
       - appnet
 
   api:
     build:
-      context: ./backend
+      context: ./server
+    ports:
+      - "3001:3001"
     environment:
-      - DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-mugshop}
+      - MONGODB_URI=mongodb://db:27017/mugshop
       - NODE_ENV=production
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - uploads:/app/uploads
     networks:
       - appnet
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   db:
-    image: postgres:16-alpine
+    image: mongo:7.0
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-mugshop}
-      - POSTGRES_USER=postgres
+      - MONGO_INITDB_DATABASE=mugshop
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/data/db
     networks:
       - appnet
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 networks:
   appnet:

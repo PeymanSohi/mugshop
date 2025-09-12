@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, ShoppingCart, Heart, Star } from 'lucide-react';
-import { products } from '../data/products';
+import { useApiProducts } from '../hooks/useApiProducts';
 import { Product } from '../types';
 import { useAppContext } from '../context/AppContext';
 import { usePinchZoom } from '../hooks/usePinchZoom';
@@ -16,10 +16,13 @@ const ProductPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const imageRef = useRef<HTMLImageElement>(null);
   const { zoomState, setupPinchZoom, resetZoom } = usePinchZoom();
+  
+  // Load products from API
+  const { products, loading: productsLoading } = useApiProducts();
 
   const product = useMemo(() => {
     return products.find(p => p.id === id);
-  }, [id]);
+  }, [id, products]);
 
   if (!product) {
     return (

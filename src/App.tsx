@@ -13,10 +13,15 @@ import Cart from './components/Cart';
 import MiniCart from './components/MiniCart';
 import LoginModal from './components/LoginModal';
 import Footer from './components/Footer';
-import { products, categories } from './data/products';
+import { categories } from './data/products';
+import { useApiProducts } from './hooks/useApiProducts';
 import { Product, CartState, CartItem, AuthState, SortOption, PaginationState, WishlistState, FilterState } from './types';
 
 function App() {
+  // Load products from API
+  const { products: apiProducts, loading: productsLoading } = useApiProducts();
+  const products = apiProducts.length ? apiProducts : [];
+  
   // Load cart from localStorage on component mount
   const [cart, setCart] = useState<CartState>(() => {
     const savedCart = localStorage.getItem('mugshop-cart');
@@ -44,10 +49,10 @@ function App() {
   const [currentPage, setCurrentPage] = useState(parseInt(urlState.page || '1'));
   const itemsPerPage = 12;
   
-  // Advanced filters state
+  // Advanced filters state - no default filters applied
   const [filters, setFilters] = useState<FilterState>({
     selectedCategories: [],
-    priceRange: { min: 0, max: 1000 },
+    priceRange: { min: 0, max: 999999 }, // Set very high max to not filter by default
     inStockOnly: false
   });
   
@@ -98,10 +103,11 @@ function App() {
       const matchesAdvancedCategory = filters.selectedCategories.length === 0 || 
                                      filters.selectedCategories.includes(product.category);
       
-      // Price range filter
+      // Price range filter - only apply if user has set a custom range
       const productPrice = product.salePrice || product.price;
-      const matchesPriceRange = productPrice >= filters.priceRange.min && 
-                               productPrice <= filters.priceRange.max;
+      const isDefaultPriceRange = filters.priceRange.min === 0 && filters.priceRange.max === 999999;
+      const matchesPriceRange = isDefaultPriceRange || 
+                               (productPrice >= filters.priceRange.min && productPrice <= filters.priceRange.max);
       
       // Stock filter
       const matchesStock = !filters.inStockOnly || product.inStock;

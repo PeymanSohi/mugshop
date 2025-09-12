@@ -29,6 +29,9 @@ const userSchema = new Schema<IUser>({
   gender: { type: String, enum: ['male', 'female', 'other'] },
   isActive: { type: Boolean, default: true },
   lastLogin: { type: Date },
+  lastLoginIP: { type: String },
+  failedLoginAttempts: { type: Number, default: 0 },
+  lockedUntil: { type: Date },
   addresses: [addressSchema]
 }, {
   timestamps: true
@@ -52,10 +55,43 @@ userSchema.methods.comparePassword = async function(candidatePassword: string): 
   return bcrypt.compare(candidatePassword, this.password);
 };
 
+// Account lockout methods
+userSchema.methods.incLoginAttempts = function() {
+  // If we have a previous lock that has expired, restart at 1
+  if (this.lockedUntil && this.lockedUntil < Date.now()) {
+    return this.updateOne({
+      $unset: { lockedUntil: 1 },
+      $set: { failedLoginAttempts: 1 }
+    });
+  }
+  
+  const updates: any = { $inc: { failedLoginAttempts: 1 } };
+  
+  // Lock account after 5 failed attempts for 2 hours
+  if (this.failedLoginAttempts + 1 >= 5 && !this.isLocked) {
+    updates.$set = { lockedUntil: Date.now() + 2 * 60 * 60 * 1000 }; // 2 hours
+  }
+  
+  return this.updateOne(updates);
+};
+
+userSchema.methods.resetLoginAttempts = function() {
+  return this.updateOne({
+    $unset: { failedLoginAttempts: 1, lockedUntil: 1 }
+  });
+};
+
+// Virtual for checking if account is locked
+userSchema.virtual('isLocked').get(function() {
+  return !!(this.lockedUntil && this.lockedUntil.getTime() > Date.now());
+});
+
 // Remove password from JSON output
 userSchema.methods.toJSON = function() {
   const userObject = this.toObject();
   delete userObject.password;
+  delete userObject.failedLoginAttempts;
+  delete userObject.lockedUntil;
   return userObject;
 };
 

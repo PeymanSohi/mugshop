@@ -55,7 +55,7 @@ const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
@@ -65,7 +65,7 @@ const AdminLayout: React.FC = () => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 right-0 z-50 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      <div className={`fixed inset-y-0 right-0 z-50 w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:w-64 ${
         sidebarOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
@@ -148,7 +148,7 @@ const AdminLayout: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="lg:mr-64">
+      <div className="flex-1 min-h-screen">
         {/* Top Bar */}
         <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4 lg:px-6">
           <div className="flex items-center justify-between">
@@ -168,7 +168,7 @@ const AdminLayout: React.FC = () => {
         </header>
 
         {/* Page Content */}
-        <main className="p-4 lg:p-6">
+        <main className="flex-1">
           <Outlet />
         </main>
       </div>
