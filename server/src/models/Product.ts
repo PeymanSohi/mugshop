@@ -9,7 +9,7 @@ const productSchema = new Schema<IProduct>({
   category: { 
     type: String, 
     required: true,
-    enum: ['کلاسیک', 'مدرن', 'روستیک', 'وینتیج', 'ست‌ها']
+    enum: ['ماگ سرامیکی', 'تراولماگ', 'بطری', 'لیوان', 'سایر']
   },
   image: { type: String, required: true },
   images: [{ type: String }],

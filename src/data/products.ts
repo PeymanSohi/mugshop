@@ -185,7 +185,7 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     colors: ['سفید', 'مشکی', 'طوسی'],
     description: 'ماگ سرامیکی سفید و همیشه‌زیبا؛ مناسب برای قهوه صبحگاهی یا چای عصرانه.',
-    category: 'کلاسیک',
+    category: 'ماگ سرامیکی',
     inStock: true,
     createdAt: new Date('2024-01-15'),
     popularity: 95,
@@ -200,7 +200,7 @@ export const products: Product[] = [
     price: 22.50,
     image: '/mugs/image.jpeg',
     description: 'ماگ قهوه‌ای دست‌ساز با بافت منحصربه‌فرد و حس طبیعی.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: true,
     createdAt: new Date('2024-01-20'),
     popularity: 88,
@@ -217,7 +217,7 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     colors: ['مشکی', 'طوسی'],
     description: 'ماگ با روکش مشکی مات؛ انتخابی شیک برای دوستداران قهوه مدرن.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true,
     createdAt: new Date('2024-02-01'),
     popularity: 92,
@@ -232,7 +232,7 @@ export const products: Product[] = [
     price: 26.75,
     image: '/mugs/image.jpeg',
     description: 'فنجان چای الهام‌گرفته از سبک قدیمی با طرح‌های گلدار ظریف.',
-    category: 'وینتیج',
+    category: 'سایر',
     inStock: true,
     createdAt: new Date('2024-01-25'),
     popularity: 78,
@@ -249,7 +249,7 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     colors: ['آبی', 'سبز', 'سفید'],
     description: 'ست دو عددی ماگ‌های دست‌ساز با لعاب زیبا.',
-    category: 'ست‌ها',
+    category: 'سایر',
     inStock: true,
     createdAt: new Date('2024-01-10'),
     popularity: 85,
@@ -265,7 +265,7 @@ export const products: Product[] = [
     image: '/mugs/image.jpeg',
     colors: ['شفاف'],
     description: 'ماگ شیشه‌ای با طراحی مینیمال؛ مناسب برای نمایش زیبای نوشیدنی.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: false,
     reviews: mockReviews.filter(r => r.productId === '6'),
     averageRating: 4.5,
@@ -278,7 +278,7 @@ export const products: Product[] = [
     price: 27.90,
     image: '/mugs/image.jpeg',
     description: 'ترکیب ظرافت و دوام با طرح سنگ مرمر؛ مناسب محیط‌های مدرن.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true,
     reviews: mockReviews.filter(r => r.productId === '7'),
     averageRating: 4.5,
@@ -290,7 +290,7 @@ export const products: Product[] = [
     price: 31.50,
     image: '/mugs/image.jpeg',
     description: 'ترکیب سرامیک و چوب طبیعی؛ حس روستیک و گرم.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: true,
     reviews: mockReviews.filter(r => r.productId === '8'),
     averageRating: 5.0,
@@ -302,7 +302,7 @@ export const products: Product[] = [
     price: 39.00,
     image: '/mugs/image.jpeg',
     description: 'ست فنجان و نعلبکی با رگه‌های طلایی برای پذیرایی مجلسی.',
-    category: 'کلاسیک',
+    category: 'ماگ سرامیکی',
     inStock: false
   },
   {
@@ -311,7 +311,7 @@ export const products: Product[] = [
     price: 42.00,
     image: '/mugs/image.jpeg',
     description: 'دو ماگ ساده و کاربردی با رنگ‌های خنثی برای استفاده روزمره.',
-    category: 'ست‌ها',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -320,7 +320,7 @@ export const products: Product[] = [
     price: 29.80,
     image: '/mugs/image.jpeg',
     description: 'فنجان ظریف با طرح گلریز الهام‌گرفته از سبک‌های کلاسیک.',
-    category: 'وینتیج',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -329,7 +329,7 @@ export const products: Product[] = [
     price: 34.75,
     image: '/mugs/image.jpeg',
     description: 'شیشه دوجداره برای حفظ دما و جلوگیری از داغ شدن بدنه.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true
   }
   ,
@@ -339,7 +339,7 @@ export const products: Product[] = [
     price: 21.90,
     image: '/mugs/image.jpeg',
     description: 'ماگ با طرح موج‌های ظریف برای حس آرامش در هر جرعه.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true
   },
   {
@@ -348,7 +348,7 @@ export const products: Product[] = [
     price: 23.40,
     image: '/mugs/image.jpeg',
     description: 'سفال دست‌ساز با رنگ‌های طبیعی و بافت دلنشین.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: true
   },
   {
@@ -357,7 +357,7 @@ export const products: Product[] = [
     price: 28.60,
     image: '/mugs/image.jpeg',
     description: 'لبه‌ طلایی برای جلوه‌ای شیک و کلاسیک.',
-    category: 'کلاسیک',
+    category: 'ماگ سرامیکی',
     inStock: false
   },
   {
@@ -366,7 +366,7 @@ export const products: Product[] = [
     price: 26.20,
     image: '/mugs/image.jpeg',
     description: 'طرح گل‌های ساده برای طرفداران سادگی.',
-    category: 'وینتیج',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -375,7 +375,7 @@ export const products: Product[] = [
     price: 54.00,
     image: '/mugs/image.jpeg',
     description: 'چهار ماگ کاربردی برای خانواده یا محل کار.',
-    category: 'ست‌ها',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -384,7 +384,7 @@ export const products: Product[] = [
     price: 24.10,
     image: '/mugs/image.jpeg',
     description: 'دسته ارگونومیک برای گرفتن راحت‌تر و امن‌تر.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true
   },
   {
@@ -393,7 +393,7 @@ export const products: Product[] = [
     price: 25.80,
     image: '/mugs/image.jpeg',
     description: 'بافت برجسته برای حس طبیعی و گرم.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: false
   },
   {
@@ -402,7 +402,7 @@ export const products: Product[] = [
     price: 19.50,
     image: '/mugs/image.jpeg',
     description: 'طراحی الهام‌گرفته از فنجان‌های کافه‌های قدیمی.',
-    category: 'کلاسیک',
+    category: 'ماگ سرامیکی',
     inStock: true
   },
   {
@@ -411,7 +411,7 @@ export const products: Product[] = [
     price: 33.00,
     image: '/mugs/image.jpeg',
     description: 'ترکیب ماگ و نعلبکی برای سرو حرفه‌ای.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true
   },
   {
@@ -420,7 +420,7 @@ export const products: Product[] = [
     price: 29.90,
     image: '/mugs/image.jpeg',
     description: 'افکت لعاب ترک برای جلوه‌ای هنری و خاص.',
-    category: 'وینتیج',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -429,7 +429,7 @@ export const products: Product[] = [
     price: 36.40,
     image: '/mugs/image.jpeg',
     description: 'دو عدد ماگ کلاسیک سفید برای هر سلیقه‌ای.',
-    category: 'ست‌ها',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -438,7 +438,7 @@ export const products: Product[] = [
     price: 27.20,
     image: '/mugs/image.jpeg',
     description: 'طرح مرمر آبی برای جلوه‌ای لوکس و مدرن.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: false
   },
   {
@@ -447,7 +447,7 @@ export const products: Product[] = [
     price: 22.80,
     image: '/mugs/image.jpeg',
     description: 'لبه‌های ناهمگون دست‌ساز با حس روستایی.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: true
   },
   {
@@ -456,7 +456,7 @@ export const products: Product[] = [
     price: 31.10,
     image: '/mugs/image.jpeg',
     description: 'نقش‌های کلاسیک برای مهمانی‌های رسمی.',
-    category: 'کلاسیک',
+    category: 'ماگ سرامیکی',
     inStock: true
   },
   {
@@ -465,7 +465,7 @@ export const products: Product[] = [
     price: 35.60,
     image: '/mugs/image.jpeg',
     description: 'نمای جذاب نوشیدنی با جداره دوجداره.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true
   },
   {
@@ -474,7 +474,7 @@ export const products: Product[] = [
     price: 26.30,
     image: '/mugs/image.jpeg',
     description: 'نقش‌های دستی برای حس پرجزئیات و گرم.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: false
   },
   {
@@ -483,7 +483,7 @@ export const products: Product[] = [
     price: 41.90,
     image: '/mugs/image.jpeg',
     description: 'ترکیب طلایی در سبک کلاسیک، مناسب پذیرایی مجلل.',
-    category: 'کلاسیک',
+    category: 'ماگ سرامیکی',
     inStock: true
   },
   {
@@ -492,7 +492,7 @@ export const products: Product[] = [
     price: 59.00,
     image: '/mugs/image.jpeg',
     description: 'سه ماگ هماهنگ برای خانواده‌های کوچک.',
-    category: 'ست‌ها',
+    category: 'سایر',
     inStock: true
   },
   {
@@ -501,7 +501,7 @@ export const products: Product[] = [
     price: 32.80,
     image: '/mugs/image.jpeg',
     description: 'بدنه مقاوم با روکش مات برای استایل مدرن.',
-    category: 'مدرن',
+    category: 'لیوان',
     inStock: true
   },
   {
@@ -510,7 +510,7 @@ export const products: Product[] = [
     price: 20.40,
     image: '/mugs/image.jpeg',
     description: 'سفالی ساده و کاربردی با حس روستایی دلنشین.',
-    category: 'روستیک',
+    category: 'ماگ سرامیکی',
     inStock: true
   }
 ];
@@ -525,4 +525,4 @@ products.forEach((product, idx) => {
   }
 });
 
-export const categories = ['همه', 'کلاسیک', 'مدرن', 'روستیک', 'وینتیج', 'ست‌ها'];
+export const categories = ['همه', 'ماگ سرامیکی', 'تراولماگ', 'بطری', 'لیوان', 'سایر'];

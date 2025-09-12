@@ -42,11 +42,11 @@ const seedData = async () => {
 
     // Create categories
     const categories = await Category.create([
-      { name: 'کلاسیک', slug: 'classic', sortOrder: 1 },
-      { name: 'مدرن', slug: 'modern', sortOrder: 2 },
-      { name: 'روستیک', slug: 'rustic', sortOrder: 3 },
-      { name: 'وینتیج', slug: 'vintage', sortOrder: 4 },
-      { name: 'ست‌ها', slug: 'sets', sortOrder: 5 }
+      { name: 'ماگ سرامیکی', slug: 'ceramic-mug', sortOrder: 1 },
+      { name: 'تراولماگ', slug: 'travel-mug', sortOrder: 2 },
+      { name: 'بطری', slug: 'bottle', sortOrder: 3 },
+      { name: 'لیوان', slug: 'glass', sortOrder: 4 },
+      { name: 'سایر', slug: 'other', sortOrder: 5 }
     ]);
 
     console.log('📂 Created categories');
@@ -57,7 +57,7 @@ const seedData = async () => {
         name: 'ماگ سرامیکی سفید کلاسیک',
         price: 18.99,
         description: 'ماگ سرامیکی سفید و همیشه‌زیبا؛ مناسب برای قهوه صبحگاهی یا چای عصرانه.',
-        category: 'کلاسیک',
+        category: 'ماگ سرامیکی',
         image: '/mugs/image.jpeg',
         colors: ['سفید', 'مشکی', 'طوسی'],
         inStock: true,
@@ -69,7 +69,7 @@ const seedData = async () => {
         name: 'ماگ قهوه‌ای روستیک',
         price: 22.50,
         description: 'ماگ قهوه‌ای دست‌ساز با بافت منحصربه‌فرد و حس طبیعی.',
-        category: 'روستیک',
+        category: 'ماگ سرامیکی',
         image: '/mugs/image-3.jpeg',
         inStock: true,
         stockCount: 30,
@@ -81,7 +81,7 @@ const seedData = async () => {
         price: 24.99,
         salePrice: 19.99,
         description: 'ماگ با روکش مشکی مات؛ انتخابی شیک برای دوستداران قهوه مدرن.',
-        category: 'مدرن',
+        category: 'لیوان',
         image: '/mugs/image-5.jpeg',
         colors: ['مشکی', 'طوسی'],
         inStock: true,
@@ -93,7 +93,7 @@ const seedData = async () => {
         name: 'فنجان چای گلدار وینتیج',
         price: 26.75,
         description: 'فنجان چای الهام‌گرفته از سبک قدیمی با طرح‌های گلدار ظریف.',
-        category: 'وینتیج',
+        category: 'سایر',
         image: '/mugs/image.jpeg',
         inStock: true,
         stockCount: 15,
@@ -105,7 +105,7 @@ const seedData = async () => {
         price: 45.00,
         salePrice: 35.00,
         description: 'ست دو عددی ماگ‌های دست‌ساز با لعاب زیبا.',
-        category: 'ست‌ها',
+        category: 'سایر',
         image: '/mugs/image-3.jpeg',
         colors: ['آبی', 'سبز', 'سفید'],
         inStock: true,

@@ -74,7 +74,7 @@ const HeroSlider: React.FC = () => {
               )}
             </div>
             <div className="absolute -bottom-4 -left-4 bg-primary-600 text-white text-xs sm:text-sm px-3 py-2 rounded-lg shadow-lg">
-              ارسال رایگان برای سفارش‌های بالای ۱۰۰٬۰۰۰ تومان
+              ارسال رایگان برای سفارش‌های بالای ۱۰۰٬۰۰۰٬۰۰۰٬۰۰۰ تومان
             </div>
           </div>
         </div>

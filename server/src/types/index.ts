@@ -3,7 +3,9 @@ import { Request } from 'express';
 
 export interface IUser extends Document {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name: string; // Full name for backward compatibility
   email: string;
   password: string;
   phone?: string;
@@ -19,6 +21,7 @@ export interface IUser extends Document {
   createdAt: Date;
   updatedAt: Date;
   addresses?: IAddress[];
+  country?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
   incLoginAttempts(): Promise<any>;
   resetLoginAttempts(): Promise<any>;
@@ -32,9 +35,11 @@ export interface IAddress {
   fullName: string;
   phone: string;
   address: string;
+  street: string;
   city: string;
   province: string;
   postalCode: string;
+  country?: string;
   isDefault: boolean;
 }
 

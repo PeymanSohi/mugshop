@@ -146,7 +146,7 @@ function App() {
     };
 
     return { filteredProducts: paginatedProducts, pagination };
-  }, [selectedCategory, debouncedSearchTerm, sortOption, currentPage, itemsPerPage, filters]);
+  }, [products, selectedCategory, debouncedSearchTerm, sortOption, currentPage, itemsPerPage, filters]);
 
   const openProduct = (product: Product) => {
     console.log('Opening product modal for:', product.name);

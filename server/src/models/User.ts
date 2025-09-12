@@ -8,14 +8,18 @@ const addressSchema = new Schema<IAddress>({
   fullName: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },
+  street: { type: String, required: true },
   city: { type: String, required: true },
   province: { type: String, required: true },
   postalCode: { type: String, required: true },
+  country: { type: String, trim: true },
   isDefault: { type: Boolean, default: false }
 });
 
 const userSchema = new Schema<IUser>({
-  name: { type: String, required: true, trim: true },
+  firstName: { type: String, required: true, trim: true },
+  lastName: { type: String, required: true, trim: true },
+  name: { type: String, required: true, trim: true }, // Full name for backward compatibility
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, minlength: 6 },
   phone: { type: String, trim: true },
@@ -27,6 +31,7 @@ const userSchema = new Schema<IUser>({
   avatar: { type: String },
   dateOfBirth: { type: Date },
   gender: { type: String, enum: ['male', 'female', 'other'] },
+  country: { type: String, trim: true },
   isActive: { type: Boolean, default: true },
   lastLogin: { type: Date },
   lastLoginIP: { type: String },
@@ -35,6 +40,14 @@ const userSchema = new Schema<IUser>({
   addresses: [addressSchema]
 }, {
   timestamps: true
+});
+
+// Set full name before saving
+userSchema.pre('save', function(next) {
+  if (this.isModified('firstName') || this.isModified('lastName')) {
+    this.name = `${this.firstName} ${this.lastName}`.trim();
+  }
+  next();
 });
 
 // Hash password before saving

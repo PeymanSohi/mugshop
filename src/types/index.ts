@@ -40,11 +40,14 @@ export interface CartState {
 export interface User {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  name: string; // Full name for backward compatibility
   phone?: string;
   avatar?: string;
   dateOfBirth?: Date;
   gender?: 'male' | 'female' | 'other';
+  country?: string;
   createdAt: Date;
   lastLogin?: Date;
   preferences?: UserPreferences;
@@ -69,9 +72,11 @@ export interface Address {
   fullName: string;
   phone: string;
   address: string;
+  street: string;
   city: string;
   province: string;
   postalCode: string;
+  country?: string;
   isDefault: boolean;
 }
 

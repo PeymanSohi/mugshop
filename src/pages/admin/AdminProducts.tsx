@@ -44,7 +44,7 @@ const AdminProducts: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const categories = ['کلاسیک', 'مدرن', 'روستیک', 'وینتیج', 'ست‌ها'];
+  const categories = ['ماگ سرامیکی', 'تراولماگ', 'بطری', 'لیوان', 'سایر'];
 
   useEffect(() => {
     loadProducts();
