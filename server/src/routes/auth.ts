@@ -1,6 +1,6 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import { login, getProfile, updateProfile, logout, refreshToken } from '../controllers/authController.js';
+import { login, register, getProfile, updateProfile, logout, refreshToken } from '../controllers/authController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import { auditLogger, getAuditLogs, clearAuditLogs } from '../middleware/audit.js';
 
@@ -15,6 +15,7 @@ const loginLimiter = rateLimit({
   legacyHeaders: false
 });
 
+router.post('/register', register);
 router.post('/login', loginLimiter, login);
 router.post('/logout', authenticate, auditLogger('LOGOUT', 'AUTH'), logout);
 router.post('/refresh', authenticate, auditLogger('REFRESH_TOKEN', 'AUTH'), refreshToken);

@@ -6,20 +6,23 @@ interface UserContextType {
   orders: Order[];
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (loginField: string, password: string) => Promise<void>;
   register: (userData: {
+    firstName: string;
+    lastName: string;
     name: string;
     email: string;
     password: string;
-    phone?: string;
+    phone: string;
+    country?: string;
     dateOfBirth?: Date;
     gender?: 'male' | 'female' | 'other';
   }) => Promise<void>;
   logout: () => void;
-  updateProfile: (userData: Partial<User>) => void;
-  addAddress: (address: Omit<Address, 'id'>) => void;
-  updateAddress: (addressId: string, address: Partial<Address>) => void;
-  deleteAddress: (addressId: string) => void;
+  updateProfile: (userData: Partial<User>) => Promise<void>;
+  addAddress: (address: Omit<Address, 'id'>) => Promise<void>;
+  updateAddress: (addressId: string, address: Partial<Address>) => Promise<void>;
+  deleteAddress: (addressId: string) => Promise<void>;
   createOrder: (orderData: Omit<Order, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => void;
 }
 
@@ -30,8 +33,11 @@ const mockUsers: User[] = [
   {
     id: '1',
     email: 'user@example.com',
+    firstName: 'کاربر',
+    lastName: 'نمونه',
     name: 'کاربر نمونه',
     phone: '09123456789',
+    country: 'IR',
     createdAt: new Date('2024-01-01'),
     lastLogin: new Date(),
     preferences: {
@@ -52,6 +58,7 @@ const mockUsers: User[] = [
         fullName: 'کاربر نمونه',
         phone: '09123456789',
         address: 'خیابان ولیعصر، پلاک ۱۲۳',
+        street: 'خیابان ولیعصر، پلاک ۱۲۳',
         city: 'تهران',
         province: 'تهران',
         postalCode: '1234567890',
@@ -149,84 +156,152 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (loginField: string, password: string): Promise<void> => {
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Find user in mock data (in real app, this would be an API call)
-    const foundUser = mockUsers.find(u => u.email === email);
-    
-    if (foundUser && password === 'password123') { // Simple password check for demo
-      const userWithUpdatedLogin = {
-        ...foundUser,
-        lastLogin: new Date()
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ loginField, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'خطا در ورود');
+      }
+
+      const data = await response.json();
+      
+      // Store token
+      localStorage.setItem('auth_token', data.token);
+      
+      // Convert API user to frontend User type
+      const user: User = {
+        id: data.user._id,
+        email: data.user.email,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        name: data.user.name,
+        phone: data.user.phone,
+        avatar: data.user.avatar,
+        dateOfBirth: data.user.dateOfBirth ? new Date(data.user.dateOfBirth) : undefined,
+        gender: data.user.gender,
+        country: data.user.country,
+        createdAt: new Date(data.user.createdAt),
+        lastLogin: new Date(),
+        preferences: {
+          language: 'fa',
+          currency: 'IRR',
+          notifications: {
+            email: true,
+            sms: false,
+            push: true
+          },
+          theme: 'auto'
+        },
+        addresses: data.user.addresses || []
       };
       
-      setUser(userWithUpdatedLogin);
-      setOrders(mockOrders.filter(order => order.userId === foundUser.id));
+      setUser(user);
+      setOrders([]); // Orders will be loaded separately if needed
       
       // Store in localStorage
-      localStorage.setItem('user', JSON.stringify(userWithUpdatedLogin));
-      localStorage.setItem('userOrders', JSON.stringify(mockOrders.filter(order => order.userId === foundUser.id)));
-    } else {
-      throw new Error('ایمیل یا رمز عبور اشتباه است');
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userOrders', JSON.stringify([]));
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   const register = async (userData: {
+    firstName: string;
+    lastName: string;
     name: string;
     email: string;
     password: string;
-    phone?: string;
+    phone: string;
+    country?: string;
     dateOfBirth?: Date;
     gender?: 'male' | 'female' | 'other';
   }): Promise<void> => {
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Check if user already exists
-    const existingUser = mockUsers.find(u => u.email === userData.email);
-    if (existingUser) {
-      throw new Error('کاربری با این ایمیل قبلاً ثبت‌نام کرده است');
-    }
-    
-    // Create new user
-    const newUser: User = {
-      id: Date.now().toString(),
-      email: userData.email,
-      name: userData.name,
-      phone: userData.phone,
-      dateOfBirth: userData.dateOfBirth,
-      gender: userData.gender,
-      createdAt: new Date(),
-      lastLogin: new Date(),
-      preferences: {
-        language: 'fa',
-        currency: 'IRR',
-        notifications: {
-          email: true,
-          sms: false,
-          push: true
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        theme: 'auto'
-      },
-      addresses: []
-    };
-    
-    setUser(newUser);
-    setOrders([]);
-    
-    // Store in localStorage
-    localStorage.setItem('user', JSON.stringify(newUser));
-    localStorage.setItem('userOrders', JSON.stringify([]));
-    
-    setIsLoading(false);
+        body: JSON.stringify({
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
+          phone: userData.phone,
+          country: userData.country,
+          dateOfBirth: userData.dateOfBirth,
+          gender: userData.gender
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'خطا در ثبت‌نام');
+      }
+
+      const data = await response.json();
+      
+      // Store token
+      localStorage.setItem('auth_token', data.token);
+      
+      // Convert API user to frontend User type
+      const user: User = {
+        id: data.user._id,
+        email: data.user.email,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        name: data.user.name,
+        phone: data.user.phone,
+        avatar: data.user.avatar,
+        dateOfBirth: data.user.dateOfBirth ? new Date(data.user.dateOfBirth) : undefined,
+        gender: data.user.gender,
+        country: data.user.country,
+        createdAt: new Date(data.user.createdAt),
+        lastLogin: new Date(),
+        preferences: {
+          language: 'fa',
+          currency: 'IRR',
+          notifications: {
+            email: true,
+            sms: false,
+            push: true
+          },
+          theme: 'auto'
+        },
+        addresses: data.user.addresses || []
+      };
+      
+      setUser(user);
+      setOrders([]);
+      
+      // Store in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('userOrders', JSON.stringify([]));
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const logout = () => {
@@ -234,18 +309,66 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setOrders([]);
     localStorage.removeItem('user');
     localStorage.removeItem('userOrders');
+    localStorage.removeItem('auth_token');
   };
 
-  const updateProfile = (userData: Partial<User>) => {
+  const updateProfile = async (userData: Partial<User>): Promise<void> => {
     if (!user) return;
     
-    const updatedUser = { ...user, ...userData };
-    setUser(updatedUser);
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setIsLoading(true);
+    
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'خطا در به‌روزرسانی پروفایل');
+      }
+
+      const data = await response.json();
+      
+      // Update user with new data
+      const updatedUser: User = {
+        ...user,
+        ...userData,
+        firstName: data.user.firstName || user.firstName,
+        lastName: data.user.lastName || user.lastName,
+        name: data.user.name || user.name,
+        email: data.user.email || user.email,
+        phone: data.user.phone || user.phone,
+        avatar: data.user.avatar || user.avatar,
+        dateOfBirth: data.user.dateOfBirth ? new Date(data.user.dateOfBirth) : user.dateOfBirth,
+        gender: data.user.gender || user.gender,
+        country: data.user.country || user.country,
+        addresses: data.user.addresses || user.addresses
+      };
+      
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+    } catch (error) {
+      console.error('Update profile error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const addAddress = (address: Omit<Address, 'id'>) => {
+  const addAddress = async (address: Omit<Address, 'id'>): Promise<void> => {
     if (!user) return;
+    
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const newAddress: Address = {
       ...address,
@@ -259,10 +382,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    setIsLoading(false);
   };
 
-  const updateAddress = (addressId: string, addressData: Partial<Address>) => {
+  const updateAddress = async (addressId: string, addressData: Partial<Address>): Promise<void> => {
     if (!user || !user.addresses) return;
+    
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const updatedAddresses = user.addresses.map(addr =>
       addr.id === addressId ? { ...addr, ...addressData } : addr
@@ -275,10 +405,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    setIsLoading(false);
   };
 
-  const deleteAddress = (addressId: string) => {
+  const deleteAddress = async (addressId: string): Promise<void> => {
     if (!user || !user.addresses) return;
+    
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     const updatedAddresses = user.addresses.filter(addr => addr.id !== addressId);
     
@@ -289,6 +426,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    setIsLoading(false);
   };
 
   const createOrder = (orderData: Omit<Order, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {

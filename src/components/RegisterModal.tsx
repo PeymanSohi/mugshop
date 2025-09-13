@@ -5,10 +5,13 @@ interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
   onRegister: (userData: {
+    firstName: string;
+    lastName: string;
     name: string;
     email: string;
     password: string;
-    phone?: string;
+    phone: string;
+    country?: string;
     dateOfBirth?: Date;
     gender?: 'male' | 'female' | 'other';
   }) => void;
@@ -22,11 +25,14 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   onSwitchToLogin
 }) => {
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
     phone: '',
+    country: '',
     dateOfBirth: '',
     gender: ''
   });
@@ -38,8 +44,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'نام الزامی است';
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'نام الزامی است';
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'نام خانوادگی الزامی است';
     }
 
     if (!formData.email.trim()) {
@@ -58,8 +68,10 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
       newErrors.confirmPassword = 'رمز عبور و تأیید آن مطابقت ندارند';
     }
 
-    if (formData.phone && !/^09\d{9}$/.test(formData.phone)) {
-      newErrors.phone = 'شماره تلفن معتبر نیست';
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'شماره تلفن الزامی است';
+    } else if (!/^09\d{9}$/.test(formData.phone)) {
+      newErrors.phone = 'شماره تلفن باید ۱۱ رقم باشد و با ۰۹ شروع شود (مثال: ۰۹۱۲۰۳۱۸۱۲۰)';
     }
 
     setErrors(newErrors);
@@ -76,22 +88,29 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
     setIsLoading(true);
     
     try {
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
       await onRegister({
-        name: formData.name,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        name: fullName,
         email: formData.email,
         password: formData.password,
         phone: formData.phone || undefined,
+        country: formData.country || undefined,
         dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth) : undefined,
         gender: formData.gender as 'male' | 'female' | 'other' | undefined
       });
       
       // Reset form
       setFormData({
+        firstName: '',
+        lastName: '',
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
         phone: '',
+        country: '',
         dateOfBirth: '',
         gender: ''
       });
@@ -136,25 +155,47 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              نام کامل
-            </label>
-            <div className="relative">
-              <User className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="نام و نام خانوادگی"
-                dir="rtl"
-              />
+          {/* First Name and Last Name */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                نام <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <User className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                    errors.firstName ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="نام"
+                  dir="rtl"
+                />
+              </div>
+              {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
             </div>
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                نام خانوادگی <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <User className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => handleInputChange('lastName', e.target.value)}
+                  className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                    errors.lastName ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="نام خانوادگی"
+                  dir="rtl"
+                />
+              </div>
+              {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
+            </div>
           </div>
 
           {/* Email */}
@@ -178,25 +219,60 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
 
-          {/* Phone */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              شماره تلفن (اختیاری)
-            </label>
-            <div className="relative">
-              <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
-                  errors.phone ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="09123456789"
-                dir="ltr"
-              />
+          {/* Phone and Country */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                شماره تلفن *
+              </label>
+              <div className="relative">
+                <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                    if (value.length <= 11) {
+                      handleInputChange('phone', value);
+                    }
+                  }}
+                  className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
+                    errors.phone ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="09123456789"
+                  dir="ltr"
+                  maxLength={11}
+                />
+              </div>
+              {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
             </div>
-            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                کشور (اختیاری)
+              </label>
+              <select
+                value={formData.country}
+                onChange={(e) => handleInputChange('country', e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+              >
+                <option value="">انتخاب کنید</option>
+                <option value="IR">ایران</option>
+                <option value="US">آمریکا</option>
+                <option value="CA">کانادا</option>
+                <option value="GB">انگلستان</option>
+                <option value="DE">آلمان</option>
+                <option value="FR">فرانسه</option>
+                <option value="IT">ایتالیا</option>
+                <option value="ES">اسپانیا</option>
+                <option value="AU">استرالیا</option>
+                <option value="JP">ژاپن</option>
+                <option value="CN">چین</option>
+                <option value="IN">هند</option>
+                <option value="BR">برزیل</option>
+                <option value="MX">مکزیک</option>
+              </select>
+            </div>
           </div>
 
           {/* Date of Birth */}

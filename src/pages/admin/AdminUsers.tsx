@@ -17,13 +17,30 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 
 interface User {
   _id: string;
+  firstName: string;
+  lastName: string;
   name: string;
   email: string;
   phone?: string;
+  country?: string;
   role: 'admin' | 'staff' | 'readonly' | 'customer';
   isActive: boolean;
   lastLogin?: string;
   createdAt: string;
+  addresses?: Array<{
+    _id: string;
+    type: 'home' | 'work' | 'other';
+    title: string;
+    fullName: string;
+    phone: string;
+    address: string;
+    street: string;
+    city: string;
+    province: string;
+    postalCode: string;
+    country?: string;
+    isDefault: boolean;
+  }>;
 }
 
 const AdminUsers: React.FC = () => {
@@ -214,11 +231,13 @@ const AdminUsers: React.FC = () => {
                               <div className="text-sm text-gray-500 dark:text-gray-400">
                                 {user.email}
                               </div>
-                              {user.phone && (
-                                <div className="text-xs text-gray-400 dark:text-gray-500">
-                                  {user.phone}
-                                </div>
-                              )}
+                              <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
+                                {user.phone && <span>{user.phone}</span>}
+                                {user.country && <span>• {user.country}</span>}
+                                {user.addresses && user.addresses.length > 0 && (
+                                  <span>• {user.addresses.length} آدرس</span>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </td>

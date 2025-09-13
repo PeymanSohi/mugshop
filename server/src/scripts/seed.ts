@@ -22,20 +22,26 @@ const seedData = async () => {
 
     // Create admin user
     const adminUser = await User.create({
+      firstName: 'مدیر',
+      lastName: 'سیستم',
       name: 'مدیر سیستم',
       email: 'admin@mugshop.com',
       password: 'admin123', // Will be hashed by pre-save hook
       role: 'admin',
-      phone: '09123456789'
+      phone: '09123456789',
+      country: 'IR'
     });
 
     // Create staff user
     const staffUser = await User.create({
+      firstName: 'کارمند',
+      lastName: 'فروشگاه',
       name: 'کارمند فروشگاه',
       email: 'staff@mugshop.com',
       password: 'staff123', // Will be hashed by pre-save hook
       role: 'staff',
-      phone: '09123456788'
+      phone: '09123456788',
+      country: 'IR'
     });
 
     console.log('👤 Created admin and staff users');
@@ -119,20 +125,25 @@ const seedData = async () => {
 
     // Create sample customer
     const customer = await User.create({
+      firstName: 'مشتری',
+      lastName: 'نمونه',
       name: 'مشتری نمونه',
       email: 'customer@example.com',
       password: 'customer123', // Will be hashed by pre-save hook
       role: 'customer',
       phone: '09123456787',
+      country: 'IR',
       addresses: [{
         type: 'home',
         title: 'خانه',
         fullName: 'مشتری نمونه',
         phone: '09123456787',
         address: 'خیابان ولیعصر، پلاک ۱۲۳',
+        street: 'خیابان ولیعصر، پلاک ۱۲۳',
         city: 'تهران',
         province: 'تهران',
         postalCode: '1234567890',
+        country: 'IR',
         isDefault: true
       }]
     });

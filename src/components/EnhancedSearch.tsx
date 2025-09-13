@@ -116,25 +116,42 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({
     }
   };
 
+  // Handle search execution
+  const executeSearch = () => {
+    if (searchTerm.trim()) {
+      // Save to recent searches
+      if (!recentSearches.includes(searchTerm.trim())) {
+        const newRecent = [searchTerm.trim(), ...recentSearches].slice(0, 5);
+        setRecentSearches(newRecent);
+        localStorage.setItem('recentSearches', JSON.stringify(newRecent));
+      }
+      setShowSuggestions(false);
+    }
+  };
+
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (!showSuggestions) return;
-
     switch (e.key) {
       case 'ArrowDown':
-        e.preventDefault();
-        setSelectedIndex(prev => 
-          prev < suggestions.length - 1 ? prev + 1 : prev
-        );
+        if (showSuggestions) {
+          e.preventDefault();
+          setSelectedIndex(prev => 
+            prev < suggestions.length - 1 ? prev + 1 : prev
+          );
+        }
         break;
       case 'ArrowUp':
-        e.preventDefault();
-        setSelectedIndex(prev => prev > 0 ? prev - 1 : -1);
+        if (showSuggestions) {
+          e.preventDefault();
+          setSelectedIndex(prev => prev > 0 ? prev - 1 : -1);
+        }
         break;
       case 'Enter':
         e.preventDefault();
-        if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+        if (showSuggestions && selectedIndex >= 0 && selectedIndex < suggestions.length) {
           handleSuggestionSelect(suggestions[selectedIndex]);
+        } else {
+          executeSearch();
         }
         break;
       case 'Escape':
@@ -192,14 +209,25 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({
           onKeyDown={handleKeyDown}
           onFocus={() => setShowSuggestions(true)}
           placeholder="جستجو در محصولات..."
-          className="block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm"
+          className="block w-full pr-20 pl-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 dark:focus:placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:focus:border-primary-500 text-sm text-gray-900 dark:text-white transition-all duration-200"
         />
+        {/* Search Button */}
+        <button
+          onClick={executeSearch}
+          className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+          type="button"
+        >
+          <Search className="h-4 w-4" />
+        </button>
+        
+        {/* Clear Button */}
         {searchTerm && (
           <button
             onClick={clearSearch}
-            className="absolute inset-y-0 left-0 pl-3 flex items-center"
+            className="absolute inset-y-0 left-8 pl-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200"
+            type="button"
           >
-            <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+            <X className="h-4 w-4" />
           </button>
         )}
       </div>
@@ -208,14 +236,14 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({
       {showSuggestions && displaySuggestions.length > 0 && (
         <div
           ref={suggestionsRef}
-          className="absolute z-50 mt-1 w-full bg-white rounded-lg shadow-lg border border-gray-200 max-h-80 overflow-y-auto"
+          className="absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-80 overflow-y-auto"
         >
           {displaySuggestions.map((suggestion, index) => (
             <div
               key={suggestion.id}
               onClick={() => handleSuggestionSelect(suggestion)}
-              className={`px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-gray-50 ${
-                index === selectedIndex ? 'bg-amber-50 border-r-4 border-amber-500' : ''
+              className={`px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                index === selectedIndex ? 'bg-amber-50 dark:bg-amber-900/20 border-r-4 border-amber-500' : ''
               }`}
             >
               <div className="flex-shrink-0">
@@ -225,19 +253,19 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({
                 {suggestion.type === 'trending' && <TrendingUp className="h-4 w-4 text-green-400" />}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                   {suggestion.text}
                 </p>
                 {suggestion.type === 'product' && suggestion.product && (
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {suggestion.product.category} • {suggestion.product.price} تومان
                   </p>
                 )}
                 {suggestion.type === 'recent' && (
-                  <p className="text-xs text-gray-500">جستجوی اخیر</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">جستجوی اخیر</p>
                 )}
                 {suggestion.type === 'trending' && (
-                  <p className="text-xs text-gray-500">محبوب</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">محبوب</p>
                 )}
               </div>
             </div>

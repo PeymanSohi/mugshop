@@ -25,7 +25,7 @@ import CheckoutModal from './components/CheckoutModal';
 import MiniCart from './components/MiniCart';
 import LoginModal from './components/LoginModal';
 import RegisterModal from './components/RegisterModal';
-import UserDashboardModal from './components/UserDashboardModal';
+import UnifiedProfileModal from './components/UnifiedProfileModal';
 import Footer from './components/Footer';
 import ProductPage from './pages/ProductPage';
 import ResponsiveContainer from './components/ResponsiveContainer';
@@ -47,9 +47,9 @@ function HomePage() {
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   // URL state management
   const { urlState, updateUrl } = useUrlState();
   const [selectedCategory, setSelectedCategory] = useState(urlState.category || 'همه');
@@ -235,9 +235,9 @@ function HomePage() {
     setCurrentPage(1);
   };
 
-  const handleLogin = async (email: string, password: string) => {
+  const handleLogin = async (loginField: string, password: string) => {
     try {
-      await login(email, password);
+      await login(loginField, password);
       setIsLoginOpen(false);
     } catch (error) {
       console.error('Login failed:', error);
@@ -246,10 +246,12 @@ function HomePage() {
   };
 
   const handleRegister = async (userData: {
+    firstName: string;
+    lastName: string;
     name: string;
     email: string;
     password: string;
-    phone?: string;
+    phone: string;
     dateOfBirth?: Date;
     gender?: 'male' | 'female' | 'other';
   }) => {
@@ -276,9 +278,9 @@ function HomePage() {
     setIsLoginOpen(true);
   };
 
-  const handleOpenDashboard = () => {
+  const handleOpenProfile = () => {
     if (isAuthenticated && user) {
-      setIsDashboardOpen(true);
+      setIsProfileOpen(true);
     } else {
       setIsLoginOpen(true);
     }
@@ -332,7 +334,7 @@ function HomePage() {
         user={user}
         isAuthenticated={isAuthenticated}
         onLoginToggle={() => setIsLoginOpen(true)}
-        onDashboardToggle={handleOpenDashboard}
+        onProfileToggle={handleOpenProfile}
         onLogout={handleLogout}
         onProductSelect={handleProductSelect}
         onCategorySelect={handleCategorySelect}
@@ -559,13 +561,11 @@ function HomePage() {
         onSwitchToLogin={handleSwitchToLogin}
       />
 
-      <UserDashboardModal
-        isOpen={isDashboardOpen}
-        onClose={() => setIsDashboardOpen(false)}
-        user={user!}
-        orders={orders}
-        onLogout={logout}
-        onUpdateProfile={updateProfile}
+      <UnifiedProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        user={user}
+        onSave={updateProfile}
         onAddAddress={addAddress}
         onUpdateAddress={updateAddress}
         onDeleteAddress={deleteAddress}

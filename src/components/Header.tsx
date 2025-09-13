@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { User as UserType, Product } from '../types';
 import DarkModeToggle from './DarkModeToggle';
 import SkipToContent from './SkipToContent';
+import EnhancedSearch from './EnhancedSearch';
  
 
 interface HeaderProps {
@@ -15,8 +16,12 @@ interface HeaderProps {
   user: UserType | null;
   isAuthenticated: boolean;
   onLoginToggle: () => void;
-  onDashboardToggle: () => void;
+  onProfileToggle: () => void;
   onLogout: () => void;
+  onProductSelect: (product: Product) => void;
+  onCategorySelect: (category: string) => void;
+  products: Product[];
+  categories: string[];
 }
 
 const Header: React.FC<HeaderProps> = ({ 
@@ -27,8 +32,12 @@ const Header: React.FC<HeaderProps> = ({
   user, 
   isAuthenticated,
   onLoginToggle, 
-  onDashboardToggle,
-  onLogout
+  onProfileToggle, 
+  onLogout,
+  onProductSelect,
+  onCategorySelect,
+  products,
+  categories
 }) => {
   const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -91,27 +100,18 @@ const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* Search Bar (desktop) */}
+            {/* Enhanced Search Bar (desktop) */}
             <div className="hidden md:block flex-1 max-w-md mx-8">
-              <div className="relative">
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => onSearchChange(e.target.value)}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  placeholder={t('a11y.searchProducts')}
-                  className={`block w-full pr-10 pl-3 py-2 border rounded-lg leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 dark:focus:placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm transition-all duration-200 ${
-                    searchFocused 
-                      ? 'border-primary-300 dark:border-primary-600 shadow-lg' 
-                      : 'border-gray-300 dark:border-gray-600'
-                  } dark:text-white`}
-                  aria-label={t('a11y.searchProducts')}
-                />
-              </div>
+              <EnhancedSearch
+                searchTerm={searchTerm}
+                onSearchChange={onSearchChange}
+                onProductSelect={onProductSelect}
+                onCategorySelect={onCategorySelect}
+                products={products}
+                categories={categories}
+                isOpen={searchFocused}
+                onClose={() => setSearchFocused(false)}
+              />
             </div>
 
             {/* User Actions (desktop) */}
@@ -121,11 +121,12 @@ const Header: React.FC<HeaderProps> = ({
               {isAuthenticated && user ? (
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
                   <button
-                    onClick={onDashboardToggle}
+                    onClick={onProfileToggle}
                     className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                    title="پروفایل"
                   >
                     <User className="h-5 w-5" />
-                    <span className="font-medium">{user.name}</span>
+                    <span className="font-medium">{user.firstName} {user.lastName}</span>
                   </button>
                   <button
                     onClick={onLogout}
@@ -188,19 +189,17 @@ const Header: React.FC<HeaderProps> = ({
                 transition={{ type: 'tween', duration: 0.3 }}
                 className="absolute top-0 bottom-0 right-0 w-80 bg-white dark:bg-gray-900 shadow-xl p-4 flex flex-col gap-4"
               >
-                {/* Mobile Search */}
-                <div className="relative">
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => onSearchChange(e.target.value)}
-                    placeholder={t('a11y.searchProducts')}
-                    className="block w-full pr-10 pl-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm dark:text-white"
-                  />
-                </div>
+                {/* Mobile Enhanced Search */}
+                <EnhancedSearch
+                  searchTerm={searchTerm}
+                  onSearchChange={onSearchChange}
+                  onProductSelect={onProductSelect}
+                  onCategorySelect={onCategorySelect}
+                  products={products}
+                  categories={categories}
+                  isOpen={true}
+                  onClose={() => {}}
+                />
 
                 {/* Mobile Controls */}
                 <div className="flex items-center justify-end">
@@ -208,17 +207,20 @@ const Header: React.FC<HeaderProps> = ({
                 </div>
 
                 {isAuthenticated && user ? (
-                  <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                      <span className="font-medium text-gray-700 dark:text-gray-200">{user.firstName} {user.lastName}</span>
+                    </div>
                     <button
-                      onClick={() => { onDashboardToggle(); closeMobile(); }}
-                      className="flex items-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                      onClick={() => { onProfileToggle(); closeMobile(); }}
+                      className="w-full flex items-center justify-center space-x-2 rtl:space-x-reverse text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
-                      <User className="h-5 w-5" />
-                      <span className="font-medium">{user.name}</span>
+                      <User className="h-4 w-4" />
+                      <span>پروفایل</span>
                     </button>
                     <button 
                       onClick={() => { onLogout(); closeMobile(); }} 
-                      className="text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 flex items-center gap-1"
+                      className="w-full text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100 flex items-center justify-center gap-2 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       <LogOut className="h-4 w-4" /> {t('nav.logout')}
                     </button>

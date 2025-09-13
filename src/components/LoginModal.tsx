@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { X, Mail, Lock, User, Eye, EyeOff, Phone } from 'lucide-react';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (email: string, password: string) => void;
+  onLogin: (loginField: string, password: string) => void;
   onSwitchToRegister: () => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSwitchToRegister }) => {
-  const [email, setEmail] = useState('');
+  const [loginField, setLoginField] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loginType, setLoginType] = useState<'phone' | 'email'>('phone'); // Default to phone
 
   if (!isOpen) return null;
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!email.trim()) {
-      newErrors.email = 'ایمیل الزامی است';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'ایمیل معتبر نیست';
+    if (!loginField.trim()) {
+      newErrors.loginField = loginType === 'phone' ? 'شماره تلفن الزامی است' : 'ایمیل الزامی است';
+    } else if (loginType === 'email' && !/\S+@\S+\.\S+/.test(loginField)) {
+      newErrors.loginField = 'ایمیل معتبر نیست';
+    } else if (loginType === 'phone' && !/^09\d{9}$/.test(loginField)) {
+      newErrors.loginField = 'شماره تلفن باید ۱۱ رقم باشد و با ۰۹ شروع شود (مثال: ۰۹۱۲۰۳۱۸۱۲۰)';
     }
 
     if (!password) {
@@ -44,9 +47,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSwi
     setIsLoading(true);
     
     try {
-      await onLogin(email, password);
+      await onLogin(loginField, password);
       // Reset form
-      setEmail('');
+      setLoginField('');
       setPassword('');
       setErrors({});
     } catch (error) {
@@ -57,13 +60,19 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSwi
   };
 
   const handleInputChange = (field: string, value: string) => {
-    if (field === 'email') setEmail(value);
+    if (field === 'loginField') setLoginField(value);
     if (field === 'password') setPassword(value);
     
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const switchLoginType = () => {
+    setLoginType(loginType === 'phone' ? 'email' : 'phone');
+    setLoginField('');
+    setErrors({});
   };
 
   return (
@@ -85,25 +94,67 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSwi
 
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            {/* Login Type Toggle */}
+            <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+              <button
+                type="button"
+                onClick={() => setLoginType('phone')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                  loginType === 'phone'
+                    ? 'bg-white dark:bg-gray-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100'
+                }`}
+              >
+                <Phone className="h-4 w-4 inline ml-2" />
+                شماره تلفن
+              </button>
+              <button
+                type="button"
+                onClick={() => setLoginType('email')}
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                  loginType === 'email'
+                    ? 'bg-white dark:bg-gray-600 text-primary-600 dark:text-primary-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100'
+                }`}
+              >
+                <Mail className="h-4 w-4 inline ml-2" />
                 ایمیل
+              </button>
+            </div>
+
+            <div>
+              <label htmlFor="loginField" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {loginType === 'phone' ? 'شماره تلفن' : 'ایمیل'}
               </label>
               <div className="relative">
-                <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                {loginType === 'phone' ? (
+                  <Phone className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                ) : (
+                  <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                )}
                 <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  type={loginType === 'phone' ? 'tel' : 'email'}
+                  id="loginField"
+                  value={loginField}
+                  onChange={(e) => {
+                    if (loginType === 'phone') {
+                      const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                      if (value.length <= 11) {
+                        handleInputChange('loginField', value);
+                      }
+                    } else {
+                      handleInputChange('loginField', e.target.value);
+                    }
+                  }}
                   className={`w-full pr-10 pl-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 dark:bg-gray-700 dark:text-white dark:border-gray-600 ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
+                    errors.loginField ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  placeholder="ایمیل"
+                  placeholder={loginType === 'phone' ? '09123456789' : 'example@email.com'}
+                  maxLength={loginType === 'phone' ? 11 : undefined}
                   required
                 />
               </div>
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              {errors.loginField && <p className="text-red-500 text-sm mt-1">{errors.loginField}</p>}
             </div>
 
             <div>

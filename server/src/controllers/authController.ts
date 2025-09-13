@@ -4,14 +4,14 @@ import User from '../models/User.js';
 import { AuthRequest } from '../types/index.js';
 import rateLimit from 'express-rate-limit';
 
-export const login = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { firstName, lastName, name, email, password, phone, country, dateOfBirth, gender } = req.body;
     const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
 
     // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ message: 'ایمیل و رمز عبور الزامی است' });
+    if (!firstName || !lastName || !email || !password || !phone) {
+      return res.status(400).json({ message: 'نام، نام خانوادگی، ایمیل، شماره تلفن و رمز عبور الزامی است' });
     }
 
     // Email validation
@@ -20,12 +20,132 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'فرمت ایمیل نامعتبر است' });
     }
 
-    // Find user
-    const user = await User.findOne({ email, isActive: true });
+    // Phone validation - must be exactly 11 digits starting with 09
+    const phoneRegex = /^09\d{9}$/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ message: 'شماره تلفن باید ۱۱ رقم باشد و با ۰۹ شروع شود (مثال: ۰۹۱۲۰۳۱۸۱۲۰)' });
+    }
+
+    // Normalize phone number
+    let normalizedPhone = phone.replace(/^\+98/, '0');
+    if (!normalizedPhone.startsWith('0')) {
+      normalizedPhone = '0' + normalizedPhone;
+    }
+
+    // Check if user already exists
+    const existingUserByEmail = await User.findOne({ email });
+    if (existingUserByEmail) {
+      return res.status(400).json({ message: 'کاربری با این ایمیل قبلاً ثبت‌نام کرده است' });
+    }
+
+    const existingUserByPhone = await User.findOne({ phone: normalizedPhone });
+    if (existingUserByPhone) {
+      return res.status(400).json({ message: 'کاربری با این شماره تلفن قبلاً ثبت‌نام کرده است' });
+    }
+
+    // Password validation
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'رمز عبور باید حداقل ۶ کاراکتر باشد' });
+    }
+
+    // Create new user
+    const user = new User({
+      firstName,
+      lastName,
+      name: name || `${firstName} ${lastName}`.trim(), // Use provided name or construct from firstName/lastName
+      email,
+      password,
+      phone: normalizedPhone,
+      country,
+      dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+      gender,
+      role: 'customer', // Default role for registered users
+      isActive: true
+    });
+
+    await user.save();
+
+    // Generate JWT token
+    const secret = process.env.JWT_SECRET || 'fallback-secret';
+    const payload = { 
+      id: user._id, 
+      email: user.email, 
+      role: user.role,
+      sessionId: Date.now().toString()
+    };
+    const options: SignOptions = { 
+      expiresIn: '24h', // Longer token expiration for customers
+      issuer: 'mugshop',
+      audience: 'mugshop-app'
+    };
+    const token = jwt.sign(payload, secret, options);
+
+    // Log successful registration
+    console.log(`New user registered: ${user._id} (${user.email}) from IP: ${clientIP}`);
+
+    res.status(201).json({
+      message: 'ثبت‌نام موفقیت‌آمیز',
+      token,
+      expiresIn: '24h',
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        country: user.country,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
+        role: user.role,
+        createdAt: user.createdAt,
+        addresses: user.addresses
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'خطای سرور' });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    const { loginField, password } = req.body; // loginField can be email or phone
+    const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+
+    // Validate input
+    if (!loginField || !password) {
+      return res.status(400).json({ message: 'شماره تلفن/ایمیل و رمز عبور الزامی است' });
+    }
+
+    // Determine if loginField is email or phone
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^(\+98|0)?9\d{9}$/; // Iranian phone number format
+    
+    let user;
+    let loginType;
+    
+    if (emailRegex.test(loginField)) {
+      // Login with email
+      loginType = 'email';
+      user = await User.findOne({ email: loginField, isActive: true });
+    } else if (phoneRegex.test(loginField)) {
+      // Login with phone number
+      loginType = 'phone';
+      // Normalize phone number (remove +98, add 0 if needed)
+      let normalizedPhone = loginField.replace(/^\+98/, '0');
+      if (!normalizedPhone.startsWith('0')) {
+        normalizedPhone = '0' + normalizedPhone;
+      }
+      user = await User.findOne({ phone: normalizedPhone, isActive: true });
+    } else {
+      return res.status(400).json({ message: 'فرمت شماره تلفن یا ایمیل نامعتبر است' });
+    }
+
     if (!user) {
       // Log failed attempt
-      console.log(`Failed login attempt for email: ${email} from IP: ${clientIP}`);
-      return res.status(401).json({ message: 'ایمیل یا رمز عبور اشتباه است' });
+      console.log(`Failed login attempt for ${loginType}: ${loginField} from IP: ${clientIP}`);
+      return res.status(401).json({ message: 'شماره تلفن/ایمیل یا رمز عبور اشتباه است' });
     }
 
     // Check if account is locked
@@ -45,19 +165,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'ایمیل یا رمز عبور اشتباه است' });
     }
 
-    // Check if user has admin privileges
-    if (!['admin', 'staff', 'readonly'].includes(user.role)) {
-      console.log(`Unauthorized access attempt for user: ${user._id} with role: ${user.role} from IP: ${clientIP}`);
-      return res.status(403).json({ message: 'دسترسی به پنل مدیریت ممنوع است' });
-    }
-
     // Reset failed login attempts and update last login
     await user.resetLoginAttempts();
     user.lastLogin = new Date();
     user.lastLoginIP = clientIP;
     await user.save();
 
-    // Generate JWT with shorter expiration for admin
+    // Generate JWT with appropriate expiration based on role
     const secret = process.env.JWT_SECRET || 'fallback-secret';
     const payload = { 
       id: user._id, 
@@ -66,26 +180,34 @@ export const login = async (req: Request, res: Response) => {
       sessionId: Date.now().toString() // Add session ID for tracking
     };
     const options: SignOptions = { 
-      expiresIn: '4h', // Shorter token expiration for admin
-      issuer: 'mugshop-admin',
-      audience: 'mugshop-admin-panel'
+      expiresIn: user.role === 'customer' ? '24h' : '4h', // Longer token for customers
+      issuer: user.role === 'customer' ? 'mugshop' : 'mugshop-admin',
+      audience: user.role === 'customer' ? 'mugshop-app' : 'mugshop-admin-panel'
     };
     const token = jwt.sign(payload, secret, options);
 
     // Log successful login
-    console.log(`Successful admin login for user: ${user._id} (${user.email}) from IP: ${clientIP}`);
+    console.log(`Successful login for user: ${user._id} (${user.email}) with role: ${user.role} from IP: ${clientIP}`);
 
     res.json({
       message: 'ورود موفقیت‌آمیز',
       token,
-      expiresIn: '4h',
+      expiresIn: user.role === 'customer' ? '24h' : '4h',
       user: {
-        id: user._id,
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         name: user.name,
         email: user.email,
+        phone: user.phone,
+        country: user.country,
+        dateOfBirth: user.dateOfBirth,
+        gender: user.gender,
         role: user.role,
         avatar: user.avatar,
-        lastLogin: user.lastLogin
+        lastLogin: user.lastLogin,
+        createdAt: user.createdAt,
+        addresses: user.addresses
       }
     });
   } catch (error) {
@@ -110,11 +232,19 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, phone, avatar } = req.body;
+    const { firstName, lastName, phone, country, dateOfBirth, gender } = req.body;
+    
+    const updateData: any = {};
+    if (firstName !== undefined) updateData.firstName = firstName;
+    if (lastName !== undefined) updateData.lastName = lastName;
+    if (phone !== undefined) updateData.phone = phone;
+    if (country !== undefined) updateData.country = country;
+    if (dateOfBirth !== undefined) updateData.dateOfBirth = dateOfBirth ? new Date(dateOfBirth) : undefined;
+    if (gender !== undefined) updateData.gender = gender;
     
     const user = await User.findByIdAndUpdate(
       req.user!.id,
-      { name, phone, avatar },
+      updateData,
       { new: true, runValidators: true }
     ).select('-password');
 
@@ -125,7 +255,7 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     res.json({ message: 'پروفایل با موفقیت به‌روزرسانی شد', user });
   } catch (error) {
     console.error('Update profile error:', error);
-    res.status(500).json({ message: 'خطای سرور' });
+    res.status(500).json({ message: 'خطا در به‌روزرسانی پروفایل' });
   }
 };
 

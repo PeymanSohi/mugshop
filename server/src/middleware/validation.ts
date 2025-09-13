@@ -34,7 +34,7 @@ export const validateUser = (req: Request, res: Response, next: NextFunction) =>
     name: Joi.string().required().min(2).max(50),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).max(100).optional(),
-    phone: Joi.string().pattern(/^09\d{9}$/).optional(),
+    phone: Joi.string().pattern(/^09\d{9}$/).required(),
     role: Joi.string().valid('admin', 'staff', 'readonly', 'customer').optional(),
     dateOfBirth: Joi.date().optional(),
     gender: Joi.string().valid('male', 'female', 'other').optional()

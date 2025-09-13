@@ -22,7 +22,7 @@ const userSchema = new Schema<IUser>({
   name: { type: String, required: true, trim: true }, // Full name for backward compatibility
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, minlength: 6 },
-  phone: { type: String, trim: true },
+  phone: { type: String, required: true, unique: true, trim: true },
   role: { 
     type: String, 
     enum: ['admin', 'staff', 'readonly', 'customer'], 
